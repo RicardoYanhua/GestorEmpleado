@@ -14,76 +14,274 @@
 	integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 	crossorigin="anonymous"></script>
 
+<!-- Enlaces a hojas de estilo locales -->
+<link href="/Styles/MenuStyle.css" rel="stylesheet">
+<link href="/Styles/Componente.css" rel="stylesheet">
+
+
+
+<script src="/Scripts/MenuScript.js"></script>
+
 </head>
 <body>
 
-	<div th:unless="${BotonAgregar}">
-		<a 
-			class="btn-icon-text fs-12 fw-bold btn btn-warning rounded-3"
-			th:href="@{/Contrato/Nuevo?Codigo={Codigo}(Codigo=${CodigoEmpleado})}">
-			Nuevo Contrato </a>
-	</div>
+
+	<div class="Container">
+
+		<div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container"
+			class="Menu-container"></div>
+
+		<div th:insert="Componentes/Menu :: Menu-Header"></div>
+
+		<div class="Main-container container-fluid py-4">
 
 
 
-	<a class="btn-icon-text fs-12 fw-bold btn btn-warning rounded-3"
-		th:href="@{/Empleado/Lista}"> Volver </a>
-
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Area</th>
-				<th>Detalle</th>
-				<th>Modalidad</th>
-				<th>Tipo de Jornada</th>
-				<th>Salario</th>
-
-				<th>F. Inicio</th>
-				<th>F. Finaliacion</th>
-				<th>Estado</th>
-				<th></th>
-			</tr>
-		</thead>
-
-		<tbody>
-			<tr th:each="Contrato : ${ListaContratos}">
-
-				<td data-label="Id" th:text="${Contrato.contratoId}"></td>
-				<td data-label="Area"
-					th:text="${Contrato.contratoAreaId.areaNombre}"></td>
-				<td data-label="Detalle" th:text="${Contrato.contratoDetalle}"></td>
-				<td data-label="Modalidad" th:text="${Contrato.contratoModalidad}"></td>
-				<td data-label="Tipo de Jornada"
-					th:text="${Contrato.contratoJornada}"></td>
-				<td data-label="Salario" th:text="${Contrato.contratoSalario}"></td>
 
 
-				<td data-label="F. Inicio" th:text="${Contrato.contratoFechaInicio}"></td>
 
-				<td data-label="F. Fin" th:text="${Contrato.contratoFechaFin}"></td>
-				<td data-label="Estado" th:text="${Contrato.contratoEstado}"></td>
+			<style>
+.img-container {
+	width: 100%;
+	height: 100%;
+	max-width: 150px;
+	max-height: 150px;
+	overflow: hidden;
+}
 
-				<td>
+.img-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+</style>
 
-					<div>
-
-						<a th:href="@{/Contrato/Editar/{CodigoContrato}(CodigoContrato=${Contrato.contratoId})}"
-							type="button" >Editar Contrato</a>
-
+			<div th:unless="${BotonAgregar}"
+				class="mb-3 p-4 rounded-3 bg-dark text-white shadow-sm"
+				style="background: linear-gradient(135deg, #367cec, #17c694);">
+				<div class="row align-items-center">
+					<!-- Imagen -->
+					<div class="col-12 col-md-4 d-flex justify-content-center">
+						<div class="img-container rounded-3 overflow-hidden">
+							<img
+								th:if="${Empleado.empFoto != null and Empleado.empFoto != ''}"
+								th:src="@{/Empleado/FotoEmpleado/{nombre}(nombre=${Empleado.empFoto})}"
+								alt="Foto empleado" class="img-fluid"> <img
+								th:if="${Empleado.empFoto == null or Empleado.empFoto == ''}"
+								src="/SVG/foto.svg" alt="Foto empleado" class="img-fluid">
+						</div>
 					</div>
 
-				</td>
+					<!-- Contenido -->
+					<div class="col-12 col-md-8 mt-2 mt-md-0">
+						<p class="contractHeading text-white fw-bold fs-4">Sin
+							contrato</p>
+						<p class="contractDescription text-white">Actualmente, el
+							empleado no tiene un contrato activo. Si desea iniciar un nuevo
+							contrato, puede proceder a configurar uno.</p>
+						<div class="d-flex justify-content-end gap-3 mt-3">
+							<a
+								class="btn btn-warning rounded-pill px-5 py-2 fw-bold text-dark"
+								th:href="@{/Contrato/Nuevo?Codigo={Codigo}(Codigo=${CodigoEmpleado})}">
+								Iniciar Contrato </a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<h4 th:if="${Contrato != null}" class="fw-bold mb-3">Detalles de
+				Contrato</h4>
+			<div th:if="${Contrato != null}" class=" mb-4 rounded-4 shadow"
+				style="background: linear-gradient(135deg, #e0f7fa, #ebf2fd);">
 
 
-			</tr>
-		</tbody>
-	</table>
+
+				<div class="row g-0 position-relative z-1">
+					<!-- Imagen -->
+					<div
+						class="col-md-4 d-flex align-items-center justify-content-center p-4">
+						<div class="rounded-4 overflow-hidden"
+							style="width: 200px; height: 200px;">
+							<img
+								th:if="${Empleado.empFoto != null and Empleado.empFoto != ''}"
+								th:src="@{/Empleado/FotoEmpleado/{nombre}(nombre=${Empleado.empFoto})}"
+								alt="Foto empleado" class="w-100 h-100"
+								style="object-fit: cover;"> <img
+								th:if="${Empleado.empFoto == null or Empleado.empFoto == ''}"
+								src="/SVG/foto.svg" alt="Foto empleado" class="w-100 h-100"
+								style="object-fit: cover;">
+						</div>
+					</div>
+
+					<!-- Contenido -->
+					<div class="col-md-8 p-4 text-dark">
+
+
+						<div class="row row-cols-2 gy-0 small">
+							<div>
+								<strong>ID</strong>
+							</div>
+							<div th:text="${Contrato.contratoId}"></div>
+							<div>
+								<strong>Área</strong>
+							</div>
+							<div th:text="${Contrato.contratoAreaId.areaNombre}"></div>
+							<div>
+								<strong>Detalle</strong>
+							</div>
+							<div th:text="${Contrato.contratoDetalle}"></div>
+							<div>
+								<strong>Modalidad</strong>
+							</div>
+							<div th:text="${Contrato.getModalidad()}"></div>
+							<div>
+								<strong>Jornada</strong>
+							</div>
+							<div th:text="${Contrato.getJornada()}"></div>
+							<div>
+								<strong>Salario</strong>
+							</div>
+							<div th:text="${Contrato.contratoSalario}"></div>
+							<div>
+								<strong>F. Inicio</strong>
+							</div>
+							<div th:text="${Contrato.contratoFechaInicio}"></div>
+							<div>
+								<strong>F. Fin</strong>
+							</div>
+							<div th:text="${Contrato.getFechaFin()}"></div>
+							<div>
+								<strong>Estado</strong>
+							</div>
+							<div th:text="${Contrato.getEstado()}"></div>
+						</div>
+
+						<!-- Botón -->
+						<div class="text-end mt-4">
+
+
+							<a th:href="@{/GenerarBoleta(content=${variableDeContenido})}" class="btn btn-primary">
+    Descargar Boleta PDF
+</a>
+							
+							
+							
+							<a
+								class="btn btn-primary rounded-pill d-inline-flex align-items-center gap-2 px-4 py-2 fw-semibold shadow"
+								th:href="@{/Contrato/Editar/{CodigoContrato}(CodigoContrato=${Contrato.contratoId})}">
+								Editar Contrato
+							</a>
+							
+							
+
+
+						</div>
+					</div>
+				</div>
+			</div>
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+			<div class="d-flex mb-3">
+				<a
+					class="btn-icon-text fs-12 fw-bold btn btn-secondary  rounded-pill px-5 py-2 rounded-3"
+					th:href="@{/Empleado/Lista}"> Volver a la lista de empleados </a>
+
+
+			</div>
+
+
+
+			<style>
+.Grid-Container {
+	height: 100%;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+	align-items: start;
+	gap: 15px;
+}
+</style>
+
+
+
+			<!-- Botón "Nuevo Empleado" alineado a la derecha -->
+			<div class="d-flex mt-4">
+				<strong class="lead fs-4 fw-bold">Historial de contratos
+					finalizados</strong>
+			</div>
+
+
+			<!-- Mostrar mensaje si no hay contratos -->
+			<div
+				th:if="${ListaContratos == null or #lists.isEmpty(ListaContratos)}"
+				class="alert alert-danger" role="alert">Este empleado no tiene
+				ningún contrato finalizado.</div>
+
+			<!-- Mostrar la grilla solo si hay contratos -->
+			<div
+				th:if="${ListaContratos != null and !#lists.isEmpty(ListaContratos)}"
+				class="Grid-Container">
+
+
+				<div class="container mt-4">
+					<div class="row" th:each="Contrato : ${ListaContratos}">
+						<div class="col-md-6 col-lg-4 mb-4">
+							<div class="card shadow-sm h-100">
+								<div class="card-body">
+									<h5 class="card-title">
+										ID: <span th:text="${Contrato.contratoId}"></span>
+									</h5>
+									<ul class="list-unstyled">
+										<li><strong>Área:</strong> <span
+											th:text="${Contrato.contratoAreaId.areaNombre}"></span></li>
+										<li><strong>Detalle:</strong> <span
+											th:text="${Contrato.contratoDetalle}"></span></li>
+										<li><strong>Modalidad:</strong> <span
+											th:text="${Contrato.getModalidad()}"></span></li>
+										<li><strong>Jornada:</strong> <span
+											th:text="${Contrato.getJornada()}"></span></li>
+										<li><strong>Salario:</strong> <span
+											th:text="${Contrato.contratoSalario}"></span></li>
+										<li><strong>F. Inicio:</strong> <span
+											th:text="${Contrato.contratoFechaInicio}"></span></li>
+										<li><strong>F. Fin:</strong> <span
+											th:text="${Contrato.getFechaFin()}"></span></li>
+										<li><strong>Estado:</strong> <span
+											th:text="${Contrato.getEstado()}"></span></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+			</div>
+
+
+
+
+
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		setActiveByIndex(0);
+	</script>
 
 
 </body>

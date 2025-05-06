@@ -23,7 +23,11 @@ public class BancoController {
 
 	@GetMapping("/")
 	public String Main() {
-		return "redirect:/Banco/Lista";
+		return "redirect:/Banco/Nuevo";
+	}
+	@GetMapping("")
+	public String Main2() {
+		return "redirect:/Banco/Nuevo";
 	}
 
 	@GetMapping("/Nuevo")

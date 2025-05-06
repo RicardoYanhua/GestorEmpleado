@@ -15,147 +15,244 @@
 	crossorigin="anonymous"></script>
 
 
-<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+	rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script> <!-- Archivo de idioma en español -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+<!-- Archivo de idioma en español -->
+<!-- Enlaces a hojas de estilo locales -->
+<link href="/Styles/MenuStyle.css" rel="stylesheet">
+<link href="/Styles/Componente.css" rel="stylesheet">
 
+
+
+<script src="/Scripts/MenuScript.js"></script>
 
 </head>
 
 <body>
 
-	<form th:action="@{/Empleado/Editar/{CodigoEmpleado}(CodigoEmpleado=${EditarEmpleado.empCodigo})}" th:object="${EditarEmpleado}" method="post" class = "container w-50">
+	<div class="Container">
 
-    <h6 class="mb-3 lead text-white bg-success shadow py-3 ps-3 rounded-3 fw-bold">
-        Registrar nuevo Empleado
-    </h6>
+		<div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container"
+			class="Menu-container"></div>
 
-    <!-- Codigo -->
-    
-    <div class="mb-3">
-        <label for="EmpleadoCodigo" class="form-label">Código</label>
-        <input type="text" class="form-control" id="EmpleadoCodigo"
-               th:field="*{empCodigo}" placeholder="Ingrese Código" autocomplete="off" readonly>
-    </div>
+		<div th:insert="Componentes/Menu :: Menu-Header"></div>
 
-    <!-- DNI -->
-    <div class="mb-3">
-        <label for="EmpleadoDni" class="form-label">DNI</label>
-        <input type="text" class="form-control" id="EmpleadoDni"
-               th:field="*{empDni}" placeholder="Ingrese DNI" autocomplete="off" readonly>
-        <div th:if="${#fields.hasErrors('empDni')}" th:errors="*{empDni}" class="text-danger"></div>
-        
-    </div>
+		<div class="Main-container container-fluid py-4">
+			<form
+				th:action="@{/Empleado/Editar/{CodigoEmpleado}(CodigoEmpleado=${EditarEmpleado.empCodigo})}"
+				th:object="${EditarEmpleado}" method="post" class="container w-75" enctype="multipart/form-data">
 
-    <!-- Nombres -->
-    <div class="mb-3">
-        <label for="EmpleadoNombres" class="form-label">Nombres</label>
-        <input type="text" class="form-control" id="EmpleadoNombres"
-               th:field="*{empNombres}" placeholder="Ingrese Nombres" autocomplete="off">
-        <div th:if="${#fields.hasErrors('empNombres')}" th:errors="*{empNombres}" class="text-danger"></div>
-    </div>
+				<div
+					class="d-flex justify-content-between align-items-center px-4 mb-4 lead text-white bg-primary shadow py-3 rounded-3 fw-bold">
 
-    <!-- Apellido Paterno -->
-    <div class="mb-3">
-        <label for="EmpleadoApellidoPaterno" class="form-label">Apellido Paterno</label>
-        <input type="text" class="form-control" id="EmpleadoApellidoPaterno"
-               th:field="*{empApellidoPaterno}" placeholder="Ingrese Apellido Paterno" autocomplete="off">
-        <div th:if="${#fields.hasErrors('empApellidoPaterno')}" th:errors="*{empApellidoPaterno}" class="text-danger"></div>
-    </div>
-
-    <!-- Apellido Materno -->
-    <div class="mb-3">
-        <label for="EmpleadoApellidoMaterno" class="form-label">Apellido Materno</label>
-        <input type="text" class="form-control" id="EmpleadoApellidoMaterno"
-               th:field="*{empApellidoMaterno}" placeholder="Ingrese Apellido Materno" autocomplete="off">
-        <div th:if="${#fields.hasErrors('empApellidoMaterno')}" th:errors="*{empApellidoMaterno}" class="text-danger"></div>
-    </div>
-
-    <!-- Fecha de Nacimiento -->
-    <div class="mb-3">
-    
-    <label for="EmpleadoFechaNacimiento" class="form-label">Fecha de Nacimiento</label>
-   
-    <input type="text" class="form-control" id="EmpleadoFechaNacimiento"
-           th:field="*{empFechaNacimiento}" placeholder="Ingrese Fecha de Nacimiento">
-           
-           
-    <div th:if="${#fields.hasErrors('empFechaNacimiento')}" th:errors="*{empFechaNacimiento}" class="text-danger"></div>
-</div>
-
-    <!-- Género -->
-    <div class="mb-3">
-        <label class="form-label">Género</label>
-        <div class="d-flex gap-5">
-            <div class="form-check">
-                <input class="form-check-input" type="radio"
-                       th:field="*{empGenero}" id="generoMasculino" value="M">
-                <label class="form-check-label" for="generoMasculino">Masculino</label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio"
-                       th:field="*{empGenero}" id="generoFemenino" value="F">
-                <label class="form-check-label" for="generoFemenino">Femenino</label>
-            </div>
-        </div>
-        <div th:if="${#fields.hasErrors('empGenero')}" th:errors="*{empGenero}" class="text-danger"></div>
-    </div>
-
-    <!-- Estado Civil -->
-    <div class="mb-3">
-        <label for="EmpleadoEstadoCivil" class="form-label">Estado Civil</label>
-        <select class="form-select" id="EmpleadoEstadoCivil" th:field="*{empEstadoCivil}">
-            <option value="" selected>Seleccione Estado Civil</option>
-            <option value="S">Soltero</option>
-            <option value="C">Casado</option>
-            <option value="D">Divorciado</option>
-            <option value="V">Viudo</option>
-        </select>
-        <div th:if="${#fields.hasErrors('empEstadoCivil')}" th:errors="*{empEstadoCivil}" class="text-danger"></div>
-    </div>
-
-    <!-- Banco -->
-    <div class="mb-3">
-        <label for="banco" class="form-label">Seleccione un Banco</label>
-        <select class="form-select" id="banco" th:field="*{empBancoId}">
-            <option value="">Seleccione Banco</option>
-            
-            <option th:each="banco : ${Bancos}"
-                    th:value="${banco.bancoId}"
-                    th:text="${banco.bancoNombre}"
-                    >
-            </option>
-        </select>
-        <div th:if="${#fields.hasErrors('empBancoId')}" th:errors="*{empBancoId}" class="text-danger"></div>
-    </div>
-
-  
-    <!-- Foto -->
-    <div class="mb-3">
-        <label for="EmpleadoFoto" class="form-label">Foto</label>
-        <input type="file" class="form-control" id="EmpleadoFoto"
-               th:field="*{empFoto}" accept="image/*">
-        <div th:if="${#fields.hasErrors('empFoto')}" th:errors="*{empFoto}" class="text-danger"></div>
-    </div>
-
-    <!-- Botón Guardar -->
-    <div class="mb-3">
-        <button type="submit" class="btn btn-primary">Guardar</button>
-    </div>
-    <a class="btn-icon-text fs-12 fw-bold btn btn-warning rounded-3" th:href="@{/Empleado/Lista}">
-    Cancelar
-</a>
-
-</form>
+					<span class="lead fs-6">Empleado</span> <input type="hidden"
+						th:field="*{empCodigo}"> <span th:text="*{empCodigo}"></span>
+				</div>
 
 
+
+
+				<div class="row">
+					<!-- Columna izquierda: Imagen + Input -->
+					<label for="empFoto" class="form-label fw-bold">FOTO</label>
+					<div class="col-md-4 mb-4">
+
+
+
+
+
+						<div
+							class="Img-Container mb-3 d-flex justify-content-center border border-3 rounded-3 border-primary">
+
+
+							<div class="rounded overflow-hidden"
+								style="max-width: 300px; min-height: 300px;">
+								<img id="previewImage"
+									th:src="${EditarEmpleado.empFoto != null and EditarEmpleado.empFoto != ''} ? @{/Empleado/FotoEmpleado/{nombre}(nombre=${EditarEmpleado.empFoto})} : '/SVG/foto.svg'"
+									th:attr="data-emp-codigo=${EditarEmpleado.empCodigo}"
+									alt="Foto empleado" class="w-100 h-100 object-fit-cover">
+							</div>
+						</div>
+
+
+
+
+						
+
+						<div class="mb-3 input-group">
+							<input type="hidden" th:field="*{empFoto}"> <input
+								type="hidden" th:field="*{empFotoByte}"> 
+								
+								<input
+								type="file" name="empFotoFile" class="form-control"
+								id="inputGroupFile04" aria-describedby="inputGroupFileAddon04"
+								aria-label="Upload">
+						</div>
+
+
+
+						<div th:if="${ErrorFoto != null || ErrorFoto != ''}"
+							class="text-danger mt-2">
+							<span th:text="${ErrorFoto}"></span>
+						</div>
+					</div>
+
+					<!-- Columna derecha: Datos del empleado -->
+					<div class="col-md-8">
+
+						<div class="row mb-3">
+
+							<div class="col-md-6">
+								<label for="EmpleadoDni" class="form-label fw-bold">DNI</label>
+								<input type="text" class="form-control" id="EmpleadoDni"
+									th:field="*{empDni}" placeholder="Ingrese DNI"
+									autocomplete="off" readonly>
+								<div th:if="${#fields.hasErrors('empDni')}"
+									th:errors="*{empDni}" class="text-danger"></div>
+							</div>
+
+							<div class="col-md-6">
+								<label for="EmpleadoNombres" class="form-label fw-bold">Nombres</label>
+								<input type="text" class="form-control" id="EmpleadoNombres"
+									th:field="*{empNombres}" placeholder="Ingrese Nombres"
+									autocomplete="off">
+								<div th:if="${#fields.hasErrors('empNombres')}"
+									th:errors="*{empNombres}" class="text-danger fs-9"></div>
+							</div>
+						</div>
+
+						<div class="row mb-3">
+
+							<div class="col-md-6">
+								<label for="EmpleadoApellidoPaterno" class="form-label fw-bold">Apellido
+									Paterno</label> <input type="text" class="form-control"
+									id="EmpleadoApellidoPaterno" th:field="*{empApellidoPaterno}"
+									placeholder="Ingrese Apellido Paterno" autocomplete="off">
+								<div th:if="${#fields.hasErrors('empApellidoPaterno')}"
+									th:errors="*{empApellidoPaterno}" class="text-danger fs-9"></div>
+							</div>
+
+							<div class="col-md-6">
+								<label for="EmpleadoApellidoMaterno" class="form-label fw-bold">Apellido
+									Materno</label> <input type="text" class="form-control"
+									id="EmpleadoApellidoMaterno" th:field="*{empApellidoMaterno}"
+									placeholder="Ingrese Apellido Materno" autocomplete="off">
+								<div th:if="${#fields.hasErrors('empApellidoMaterno')}"
+									th:errors="*{empApellidoMaterno}" class="text-danger fs-9"></div>
+							</div>
+						</div>
+
+						<div class="row mb-3">
+
+							<div class="col-md-6">
+								<label for="EmpleadoFechaNacimiento" class="form-label fw-bold">Fecha
+									de Nacimiento</label> <input type="text" class="form-control"
+									id="EmpleadoFechaNacimiento" th:field="*{empFechaNacimiento}"
+									placeholder="Ingrese Fecha de Nacimiento">
+								<div th:if="${#fields.hasErrors('empFechaNacimiento')}"
+									th:errors="*{empFechaNacimiento}" class="text-danger fs-9"></div>
+							</div>
+
+							<div class="col-md-6">
+								<label class="form-label fw-bold">Género</label>
+								<div class="d-flex gap-4">
+									<div class="form-check">
+										<input class="form-check-input" type="radio"
+											th:field="*{empGenero}" id="generoMasculino" value="M">
+										<label class="form-check-label" for="generoMasculino">Masculino</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio"
+											th:field="*{empGenero}" id="generoFemenino" value="F">
+										<label class="form-check-label" for="generoFemenino">Femenino</label>
+									</div>
+								</div>
+								<div th:if="${#fields.hasErrors('empGenero')}"
+									th:errors="*{empGenero}" class="text-danger fs-9"></div>
+							</div>
+						</div>
+
+
+
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<label for="EmpleadoEstadoCivil" class="form-label fw-bold">Estado
+									Civil</label> <select class="form-select" id="EmpleadoEstadoCivil"
+									th:field="*{empEstadoCivil}">
+									<option value="">Seleccione Estado Civil</option>
+									<option value="S">Soltero</option>
+									<option value="C">Casado</option>
+									<option value="D">Divorciado</option>
+									<option value="V">Viudo</option>
+								</select>
+								<div th:if="${#fields.hasErrors('empEstadoCivil')}"
+									th:errors="*{empEstadoCivil}" class="text-danger fs-9"></div>
+							</div>
+							<div class="col-md-6">
+								<label for="banco" class="form-label fw-bold">Banco</label> <select
+									class="form-select" id="banco" th:field="*{empBancoId}">
+									<option value="">Seleccione Banco</option>
+									<option th:each="banco : ${Bancos}" th:value="${banco.bancoId}"
+										th:text="${banco.bancoNombre}"></option>
+								</select>
+								<div th:if="${#fields.hasErrors('empBancoId')}"
+									th:errors="*{empBancoId}" class="text-danger fs-9"></div>
+							</div>
+						</div>
+						<div class="d-flex justify-content-end gap-3 mt-4">
+							<button type="submit" class="btn btn-primary px-3">Guardar</button>
+							<a class="btn btn-outline-secondary px-3"
+								th:href="@{/Empleado/Lista}">Cancelar</a>
+						</div>
+					</div>
+				</div>
+			</form>
+
+
+
+		</div>
+	</div>
 	<script>
 		flatpickr("#EmpleadoFechaNacimiento", {
-			dateFormat: "d-m-Y",
+			dateFormat : "d-m-Y",
 			maxDate : "today",
-			locale: "es" 
+			locale : "es"
+		});
+		setActiveByIndex(0);
+	</script>
+
+	<script>
+		const fileInput = document.getElementById("inputGroupFile04");
+		const previewImage = document.getElementById("previewImage");
+		const empCodigo = previewImage.dataset.empCodigo;
+		const storageKey = `fotoPreview-${empCodigo}`;
+
+		fileInput.addEventListener("change", function() {
+			const file = this.files[0];
+			if (file && file.type.startsWith("image/")) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					previewImage.src = e.target.result;
+					sessionStorage.setItem(storageKey, e.target.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+
+		// Restaurar imagen si existe en sessionStorage
+		window.addEventListener("load", function() {
+			const savedImage = sessionStorage.getItem(storageKey);
+			if (savedImage) {
+				previewImage.src = savedImage;
+			}
 		});
 	</script>
+
+
+
 
 </body>
 </html>

@@ -63,22 +63,30 @@ public class ContratoServiceImpl implements ContratoService {
 
 	@Transactional
 	public void ActualizarEstadosContratos() {
-		List<Contrato> contratos = contratoRepository.ObtenerContratosFechas();
+	    List<Contrato> contratos = contratoRepository.ObtenerContratosFechas();
+	    LocalDate fechaActual = LocalDate.now();
 
-		LocalDate fechaActual = LocalDate.now();
-		for (Contrato contrato : contratos) {
-			if (fechaActual.isBefore(contrato.getContratoFechaInicio())) {
-				contrato.setContratoEstado(Estado.P);
-			} else if (fechaActual.isEqual(contrato.getContratoFechaInicio())
-					|| (fechaActual.isAfter(contrato.getContratoFechaInicio())
-							&& fechaActual.isBefore(contrato.getContratoFechaFin()))) {
-				contrato.setContratoEstado(Estado.V);
-			} else if (fechaActual.isAfter(contrato.getContratoFechaFin())) {
-				contrato.setContratoEstado(Estado.C);
-			}
-		}
-		contratoRepository.saveAll(contratos);
+	    for (Contrato contrato : contratos) {
+	        LocalDate fechaInicio = contrato.getContratoFechaInicio();
+	        LocalDate fechaFin = contrato.getContratoFechaFin();
+
+	        if (fechaInicio == null) {
+	            continue; // No se puede evaluar el estado sin fecha de inicio
+	        }
+
+	        if (fechaActual.isBefore(fechaInicio)) {
+	            contrato.setContratoEstado(Estado.P); // Pendiente
+	        } else if (fechaFin == null || fechaActual.isEqual(fechaInicio) || 
+	                   (fechaActual.isAfter(fechaInicio) && fechaActual.isBefore(fechaFin))) {
+	            contrato.setContratoEstado(Estado.V); // Vigente
+	        } else if (fechaActual.isAfter(fechaFin)) {
+	            contrato.setContratoEstado(Estado.C); // Caducado
+	        }
+	    }
+
+	    contratoRepository.saveAll(contratos);
 	}
+
 
 	public Estado DeterminarEstadoDelContrato(Contrato contrato) {
 
@@ -109,6 +117,19 @@ public class ContratoServiceImpl implements ContratoService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public Contrato ObtenerContrato(Empleado emp) {
+		if(TieneContrato(emp)) {
+			return contratoRepository.ObtenerContrato(emp);
+		}
+		return null;
+	}
+
+	@Override
+	public List<Contrato> ListaContratoEmpleadoCaducado(Empleado empleado) {
+		return contratoRepository.ListarContratosEmpleadoCaducados(empleado);
 	}
 
 }

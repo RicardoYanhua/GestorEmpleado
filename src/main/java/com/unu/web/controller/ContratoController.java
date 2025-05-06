@@ -47,9 +47,13 @@ public class ContratoController {
 	public ModelAndView verDetalles(@RequestParam("CodigoEmpleado") String empleado) {
 		ModelAndView modelAndView = new ModelAndView("Contrato/ListaContrato");
 		Empleado emp = empleadoService.ObtenerEmpleado(empleado);
-		List<Contrato> listaContratos = contratoService.ListaContratoEmpleado(emp);
+		List<Contrato> listaContratos = contratoService.ListaContratoEmpleadoCaducado(emp);
+		Contrato cont = contratoService.ObtenerContrato(emp);
+		
 		modelAndView.addObject("ListaContratos", listaContratos);
 		modelAndView.addObject("CodigoEmpleado", empleado);
+		modelAndView.addObject("Empleado", emp);
+		modelAndView.addObject("Contrato", cont);
 		modelAndView.addObject("BotonAgregar", contratoService.TieneContrato(emp));
 		return modelAndView;
 	}
@@ -72,13 +76,17 @@ public class ContratoController {
 			BindingResult result) {
 		ModelAndView modelAndView = new ModelAndView();
 		
-		modelAndView.addObject("Areas", areaService.ListarArea());
-		
 		Estado estadoContrato = contratoService.DeterminarEstadoDelContrato(contrato);
+		contrato.setContratoEstado(estadoContrato);
+		
+		
+		
 		if (result.hasErrors()) {
 			if (estadoContrato == null) {
 				modelAndView.addObject("ErrorFechas", "El orden de las fechas seleccionadas no es válido.");
 			}
+			
+			modelAndView.addObject("Areas", areaService.ListarArea());
 			modelAndView.setViewName("Contrato/NuevoContrato");
 			return modelAndView;
 		}
@@ -106,7 +114,7 @@ public class ContratoController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("Areas", areaService.ListarArea());
 		Estado estadoContrato = contratoService.DeterminarEstadoDelContrato(contrato);
-		
+		contrato.setContratoEstado(estadoContrato);
 		if (result.hasErrors()) {
 			if (estadoContrato == null) {
 				modelAndView.addObject("ErrorFechas", "El orden de las fechas seleccionadas no es válido.");

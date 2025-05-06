@@ -1,0 +1,378 @@
+@charset "UTF-8";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+*{
+	font-family: 'Inter', sans-serif;
+}
+:root{
+	
+	--InputColorBorder: rgb(23, 120, 242);
+	--InputColorShadow: rgb(23 120 242/ 10%);
+	
+	--ButtonColor: rgb(23, 120, 242);
+	--ButtonBackground: rgb(255,255,255);
+}
+
+
+.InputContainer {
+	display: flex;
+	line-height: 30px;
+	align-items: center;
+	position: relative;
+	width: 100%;
+}
+
+.input {
+	width: 100%;
+	height: 45px;
+	line-height: 30px;
+	padding: 0 1rem;
+	padding-left: 3rem;
+	border: 1px solid rgb(170,170,170);;
+	border-radius: 10px;
+	outline: none;
+	background-color: #f8fafc;
+	color: #0d0c22;
+	transition: .5s ease;
+}
+
+.input::placeholder {
+	color: #94a3b8;
+}
+
+.input:focus, input:hover {
+	outline: none;
+	border-color: var(--InputColorBorder);
+	background-color: #fff;
+	box-shadow: 0 0 20px 3px var(--InputColorShadow)
+}
+
+.icono {
+	position: absolute;
+	left: 1rem;
+	fill: none;
+	width: 1.4rem;
+	height: 1.4rem;
+}
+
+.inputpasword{
+	padding: 0 3.2rem;
+}
+
+.buttonTogglePassword {
+	position: absolute;
+	right: 1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.8rem;  /* Igual al tamaño del icono para precisión */
+	height: 1.8rem;
+}
+
+
+.buttonPasswordIcono {
+	width: 90%;
+	height: 90%;
+	object-fit: contain;
+	display: block;
+}
+
+
+
+
+
+
+.ButtonHover {
+  display: inline-block;
+  width: 100%;
+  height: 2.6em;
+  line-height: 1.5em;
+  
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid var(--ButtonColor);
+  transition: color 0.3s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 15px;
+  font-weight: 500;
+  color: var(--ButtonColor);
+  background-color: var(--ButtonBackground);
+}
+
+.ButtonHover:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: var(--ButtonColor);
+  height: 300px;
+  width: 600px;
+  border-radius: 50%;
+}
+
+.ButtonHover:hover {
+  color: rgb(255,255,255);
+}
+
+.ButtonHover:before {
+  top: 100%;
+  left: 100%;
+  transition: all 0.5s;
+}
+
+.ButtonHover:hover:before {
+  top: -100px;
+  left: -100px;
+}
+
+.ButtonHover:active:before {
+  background: var(--ButtonColor);
+  transition: background 0s;
+}
+
+
+
+
+
+
+
+.fs-7{
+	font-size: 16px;
+	
+}
+.fs-8{
+	font-size: 14px;
+	
+}
+
+.fs-9{
+	font-size: 12px;
+	
+}
+
+
+
+
+.btn-icon {
+	width: 30px;
+	height: 30px;
+	outline: none;
+	margin: 0;
+	border: none;
+	border-radius: 8px;
+	padding: 8px;
+	box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2);
+	background-color: rgb(250, 250, 255);
+	background-size: 18px 18px;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: all 200ms ease-in;
+}
+
+.btn-icon:hover {
+	filter: invert(1);
+	box-shadow: 0 8px 12px rgba(255, 255, 255, 0.25);
+}
+
+.icon-delete {
+	background-image: url('/SVG/op_delete.svg');
+}
+
+.icon-edit {
+	background-image: url('/SVG/op_edit.svg');
+}
+
+.icon-view {
+	background-image: url('/SVG/op_view.svg');
+}
+
+.icon-add {
+	background-image: url('/SVG/icon-add.svg');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.menu {
+	font-size: 16px;
+	line-height: 1.0;
+	color:rgb(13, 110, 253);
+	width: fit-content;
+	display: flex;
+	list-style: none;
+	
+}
+.menu:hover {
+		background-color: #0a3cff;
+		border-top-left-radius: 16px;
+		border-top-right-radius: 16px;
+
+	}
+
+.menu button {
+	
+	all: unset;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	width: 100%;  
+	box-sizing: border-box;  
+}
+
+.menu .link {
+	border:1px solid #0a3cff;
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 12px 36px;
+	border-radius: 16px;
+	overflow: hidden;
+	transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .link::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #0a3cff;
+	z-index: -1;
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .link svg {
+	width: 14px;
+	height: 14px;
+	fill: #000000;
+	transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.menu .item {
+	position: relative;
+}
+
+.menu .item .submenu {
+	background-color: rgb(255, 255, 255);
+	display: flex;
+	flex-direction: column;
+	align-items: stretch; 
+	position: absolute;
+	top: 100%;
+	border-radius: 0 0 16px 16px;
+	left: 0;
+	width: 100%;
+	overflow: hidden;
+	border: 1px solid #cccccc;
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-12px);
+	transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+	z-index: 1;
+	pointer-events: none;
+	list-style: none;
+}
+
+.menu .item:hover .submenu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+	pointer-events: auto;
+	border-top: transparent;
+	border-color: #0a3cff;
+}
+
+.menu .item:hover .link {
+	color: #ffffff;
+	border-radius: 16px 16px 0 0;
+}
+
+.menu .item:hover .link::after {
+	transform: scaleX(1);
+	transform-origin: right;
+}
+
+.menu .item:hover .link svg {
+	fill: #ffffff;
+	transform: rotate(-180deg);
+}
+
+.submenu .submenu-item {
+	width: 100%;
+	transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+	box-sizing: border-box;
+}
+
+.submenu .submenu-link {
+	display: block;
+	width: 100%;
+	padding: 12px 24px;
+	position: relative;
+	text-align: center;
+	box-sizing: border-box;
+}
+
+.submenu .submenu-item:last-child .submenu-link {
+	border-bottom: none;
+}
+
+.submenu .submenu-link::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: scaleX(0);
+	width: 100%;
+	height: 100%;
+	background-color: #0a3cff;
+	z-index: -1;
+	transform-origin: left;
+}
+
+.submenu .submenu-link:hover:before {
+	transform: scaleX(1);
+	transform-origin: right;
+}
+
+.submenu .submenu-link:hover {
+	color: #ffffff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

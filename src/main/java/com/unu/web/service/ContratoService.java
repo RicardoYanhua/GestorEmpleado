@@ -12,12 +12,14 @@ public interface ContratoService {
 	public abstract Page PaginaContrato(Pageable paginacion);
 	public abstract List<Contrato> ListarContrato();
 	public abstract List<Contrato> ListaContratoEmpleado( Empleado empleado);
+	public abstract List<Contrato> ListaContratoEmpleadoCaducado( Empleado empleado);
 	public abstract Contrato InsertarContrato(Contrato contrato);
 	public abstract void ActualizarContrato(Contrato contrato);
 	public abstract Contrato ObtenerContrato(int idContrato);
 	
 	public abstract void ActualizarEstadosContratos();
 	public abstract boolean TieneContrato(Empleado emp);
+	public abstract Contrato ObtenerContrato(Empleado emp);
 	
 	public abstract Estado DeterminarEstadoDelContrato(Contrato contrato);
 	

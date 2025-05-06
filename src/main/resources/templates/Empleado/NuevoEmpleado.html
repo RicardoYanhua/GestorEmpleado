@@ -21,150 +21,152 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <!-- Archivo de idioma en español -->
+<!-- Enlaces a hojas de estilo locales -->
+<link href="/Styles/MenuStyle.css" rel="stylesheet">
+<link href="/Styles/Componente.css" rel="stylesheet">
 
+
+
+<script src="/Scripts/MenuScript.js"></script>
 
 </head>
 
 <body>
 
+<div class="Container">
+
+		<div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container"
+			class="Menu-container"></div>
+
+		<div th:insert="Componentes/Menu :: Menu-Header"></div>
+
+		<div class="Main-container container-fluid py-4">
+
 	<form th:action="@{/Empleado/Nuevo}" th:object="${NuevoEmpleado}"
-		enctype="multipart/form-data" method="post" class="container w-50">
+      enctype="multipart/form-data" method="post" class="container w-75">
 
-		<h6
-			class="mb-3 lead text-white bg-success shadow py-3 ps-3 rounded-3 fw-bold">
-			Registrar nuevo Empleado</h6>
+    <h6 class="mb-4 lead text-white bg-primary shadow py-3 ps-3 rounded-3 fw-bold">
+        Registrar Nuevo Empleado
+    </h6>
 
-		<!-- Codigo -->
-		<div class="mb-3">
-			<label for="EmpleadoCodigo" class="form-label">Código</label> <input
-				type="text" class="form-control" id="EmpleadoCodigo"
-				th:field="*{empCodigo}" placeholder="Ingrese Código"
-				autocomplete="off">
-			<div th:if="${#fields.hasErrors('empCodigo')}"
-				th:errors="*{empCodigo}" class="text-danger"></div>
-		</div>
+    <div class="row">
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoCodigo" class="form-label fw-bold">Código</label>
+            <input type="text" class="form-control" id="EmpleadoCodigo"
+                   th:field="*{empCodigo}" placeholder="Ingrese Código"
+                   autocomplete="off" readonly="readonly">
+            <div th:if="${#fields.hasErrors('empCodigo')}" th:errors="*{empCodigo}" class="text-danger fs-9"></div>
+        </div>
 
-		<!-- DNI -->
-		<div class="mb-3">
-			<label for="EmpleadoDni" class="form-label">DNI</label> <input
-				type="text" class="form-control" id="EmpleadoDni"
-				th:field="*{empDni}" placeholder="Ingrese DNI" autocomplete="off">
-			<div th:if="${#fields.hasErrors('empDni')}" th:errors="*{empDni}"
-				class="text-danger"></div>
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoDni" class="form-label fw-bold">DNI</label>
+            <input type="text" class="form-control" id="EmpleadoDni"
+                   th:field="*{empDni}" placeholder="Ingrese DNI" autocomplete="off">
+            <div th:if="${#fields.hasErrors('empDni')}" th:errors="*{empDni}" class="text-danger fs-9"></div>
+            <div th:if="${ErrorDni != null || ErrorDni != ''}" class="text-danger">
+                <span th:text="${ErrorDni}"></span>
+            </div>
+        </div>
+    </div>
 
-			<div th:if="${ErrorDni != null || ErrorDni != ''}"
-				class="text-danger">
-				<span th:text="${ErrorDni}"> </span>
-			</div>
-		</div>
+    <div class="row">
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoNombres" class="form-label fw-bold">Nombres</label>
+            <input type="text" class="form-control" id="EmpleadoNombres"
+                   th:field="*{empNombres}" placeholder="Ingrese Nombres" autocomplete="off">
+            <div th:if="${#fields.hasErrors('empNombres')}" th:errors="*{empNombres}" class="text-danger fs-9"></div>
+        </div>
 
-		<!-- Nombres -->
-		<div class="mb-3">
-			<label for="EmpleadoNombres" class="form-label">Nombres</label> <input
-				type="text" class="form-control" id="EmpleadoNombres"
-				th:field="*{empNombres}" placeholder="Ingrese Nombres"
-				autocomplete="off">
-			<div th:if="${#fields.hasErrors('empNombres')}"
-				th:errors="*{empNombres}" class="text-danger"></div>
-		</div>
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoApellidoPaterno" class="form-label fw-bold">Apellido Paterno</label>
+            <input type="text" class="form-control" id="EmpleadoApellidoPaterno"
+                   th:field="*{empApellidoPaterno}" placeholder="Ingrese Apellido Paterno" autocomplete="off">
+            <div th:if="${#fields.hasErrors('empApellidoPaterno')}" th:errors="*{empApellidoPaterno}" class="text-danger fs-9"></div>
+        </div>
+    </div>
 
-		<!-- Apellido Paterno -->
-		<div class="mb-3">
-			<label for="EmpleadoApellidoPaterno" class="form-label">Apellido
-				Paterno</label> <input type="text" class="form-control"
-				id="EmpleadoApellidoPaterno" th:field="*{empApellidoPaterno}"
-				placeholder="Ingrese Apellido Paterno" autocomplete="off">
-			<div th:if="${#fields.hasErrors('empApellidoPaterno')}"
-				th:errors="*{empApellidoPaterno}" class="text-danger"></div>
-		</div>
+    <div class="row">
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoApellidoMaterno" class="form-label fw-bold">Apellido Materno</label>
+            <input type="text" class="form-control" id="EmpleadoApellidoMaterno"
+                   th:field="*{empApellidoMaterno}" placeholder="Ingrese Apellido Materno" autocomplete="off">
+            <div th:if="${#fields.hasErrors('empApellidoMaterno')}" th:errors="*{empApellidoMaterno}" class="text-danger fs-9"></div>
+        </div>
 
-		<!-- Apellido Materno -->
-		<div class="mb-3">
-			<label for="EmpleadoApellidoMaterno" class="form-label">Apellido
-				Materno</label> <input type="text" class="form-control"
-				id="EmpleadoApellidoMaterno" th:field="*{empApellidoMaterno}"
-				placeholder="Ingrese Apellido Materno" autocomplete="off">
-			<div th:if="${#fields.hasErrors('empApellidoMaterno')}"
-				th:errors="*{empApellidoMaterno}" class="text-danger"></div>
-		</div>
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoFechaNacimiento" class="form-label fw-bold">Fecha de Nacimiento</label>
+            <input type="text" class="form-control" id="EmpleadoFechaNacimiento"
+                   th:field="*{empFechaNacimiento}" placeholder="Ingrese Fecha de Nacimiento">
+            <div th:if="${#fields.hasErrors('empFechaNacimiento')}" th:errors="*{empFechaNacimiento}" class="text-danger fs-9"></div>
+        </div>
+    </div>
 
-		<!-- Fecha de Nacimiento -->
-		<div class="mb-3">
+    <div class="row">
+        <div class="mb-3 col-md-6">
+            <label class="form-label fw-bold">Género</label>
+            <div class="d-flex gap-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" th:field="*{empGenero}" id="generoMasculino" value="M">
+                    <label class="form-check-label" for="generoMasculino">Masculino</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" th:field="*{empGenero}" id="generoFemenino" value="F">
+                    <label class="form-check-label" for="generoFemenino">Femenino</label>
+                </div>
+            </div>
+            <div th:if="${#fields.hasErrors('empGenero')}" th:errors="*{empGenero}" class="text-danger fs-9"></div>
+        </div>
 
-			<label for="EmpleadoFechaNacimiento" class="form-label">Fecha
-				de Nacimiento</label> <input type="text" class="form-control"
-				id="EmpleadoFechaNacimiento" th:field="*{empFechaNacimiento}"
-				placeholder="Ingrese Fecha de Nacimiento">
+        <div class="mb-3 col-md-6">
+            <label for="EmpleadoEstadoCivil" class="form-label fw-bold">Estado Civil</label>
+            <select class="form-select" id="EmpleadoEstadoCivil" th:field="*{empEstadoCivil}">
+                <option value="" selected>Seleccione Estado Civil</option>
+                <option value="S">Soltero</option>
+                <option value="C">Casado</option>
+                <option value="D">Divorciado</option>
+                <option value="V">Viudo</option>
+            </select>
+            <div th:if="${#fields.hasErrors('empEstadoCivil')}" th:errors="*{empEstadoCivil}" class="text-danger fs-9"></div>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="mb-3 col-md-6">
+            <label for="banco" class="form-label fw-bold">Banco</label>
+            <select class="form-select" id="banco" th:field="*{empBancoId}">
+                <option value="" selected>Seleccione Banco</option>
+                <option th:each="banco : ${Bancos}" th:value="${banco.bancoId}" th:text="${banco.bancoNombre}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('empBancoId')}" th:errors="*{empBancoId}" class="text-danger fs-9"></div>
+        </div>
 
-			<div th:if="${#fields.hasErrors('empFechaNacimiento')}"
-				th:errors="*{empFechaNacimiento}" class="text-danger"></div>
-		</div>
+        <div class="mb-3 col-md-6">
+            <label class="form-label fw-bold">Foto</label>
+            <div class="input-group">
+                <input type="hidden" th:value="*{empFoto}" th:field="*{empFoto}">
+                <input type="hidden" th:value="*{empFotoByte}" th:field="*{empFotoByte}">
+                <input type="file" name="empFotoFile" class="form-control" id="inputGroupFile04"
+                       aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                <button th:if="${FotoSuccess == true}" class="btn btn-outline-secondary" type="button"
+                        id="inputGroupFileAddon04">Foto seleccionada correctamente</button>
+            </div>
+            <div th:if="${ErrorFoto != null || ErrorFoto != ''}" class="text-danger fs-9">
+                <span th:text="${ErrorFoto}"> </span>
+            </div>
+        </div>
+    </div>
 
-		<!-- Género -->
-		<div class="mb-3">
-			<label class="form-label">Género</label>
-			<div class="d-flex gap-5">
-				<div class="form-check">
-					<input class="form-check-input" type="radio"
-						th:field="*{empGenero}" id="generoMasculino" value="M"> <label
-						class="form-check-label" for="generoMasculino">Masculino</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio"
-						th:field="*{empGenero}" id="generoFemenino" value="F"> <label
-						class="form-check-label" for="generoFemenino">Femenino</label>
-				</div>
-			</div>
-			<div th:if="${#fields.hasErrors('empGenero')}"
-				th:errors="*{empGenero}" class="text-danger"></div>
-		</div>
+    <!-- Botones -->
+    <div class="d-flex justify-content-end gap-3 mt-4">
+        <button type="submit" class="btn btn-primary px-3">Guardar</button>
+        <a class="btn btn-outline-secondary px-3" th:href="@{/Empleado/Lista}">Cancelar</a>
+    </div>
+</form>
 
-		<!-- Estado Civil -->
-		<div class="mb-3">
-			<label for="EmpleadoEstadoCivil" class="form-label">Estado
-				Civil</label> <select class="form-select" id="EmpleadoEstadoCivil"
-				th:field="*{empEstadoCivil}">
-				<option value="" selected>Seleccione Estado Civil</option>
-				<option value="S">Soltero</option>
-				<option value="C">Casado</option>
-				<option value="D">Divorciado</option>
-				<option value="V">Viudo</option>
-			</select>
-			<div th:if="${#fields.hasErrors('empEstadoCivil')}"
-				th:errors="*{empEstadoCivil}" class="text-danger"></div>
-		</div>
-
-		<!-- Banco -->
-		<div class="mb-3">
-			<label for="banco" class="form-label">Seleccione un Banco</label> <select
-				class="form-select" id="banco" th:field="*{empBancoId}">
-				<option value="" selected>Seleccione Banco</option>
-				<option th:each="banco : ${Bancos}" th:value="${banco.bancoId}"
-					th:text="${banco.bancoNombre}"></option>
-			</select>
-			<div th:if="${#fields.hasErrors('empBancoId')}"
-				th:errors="*{empBancoId}" class="text-danger"></div>
-		</div>
-
-
-		<!-- Foto -->
-		<div class="mb-3">
-			<label for="EmpleadoFoto" class="form-label">Foto</label> <input
-				type="file" class="form-control" id="EmpleadoFoto" name="Foto" 
-				accept="image/*">
-			
-		</div>
-
-
-		<!-- Botón Guardar -->
-		<div class="mb-3">
-			<button type="submit" class="btn btn-primary">Guardar</button>
-		</div>
-		<a class="btn-icon-text fs-12 fw-bold btn btn-warning rounded-3"
-			th:href="@{/Empleado/Lista}"> Cancelar </a>
-
-	</form>
+	
+	
+	</div>
+	</div>
 
 
 	<script>
@@ -173,6 +175,7 @@
 			maxDate : "today",
 			locale : "es"
 		});
+		setActiveByIndex(0);
 	</script>
 
 </body>

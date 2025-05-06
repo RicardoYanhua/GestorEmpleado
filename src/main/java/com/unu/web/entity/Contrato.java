@@ -7,21 +7,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.Column;
 
 @Entity
@@ -35,24 +32,29 @@ public class Contrato {
 	@ManyToOne
 	@JoinColumn(name = "contratoEmpleadoId", nullable = false)
 	private Empleado contratoEmpleadoId;
-	
+
 	@ManyToOne
 	@NotNull(message = "Debe seleccionar el area para el empleado.")
 	@JoinColumn(name = "contratoAreaId", nullable = false)
 	private Area contratoAreaId;
 
-	public enum Modalidad {PF, IN, OS, FA, SU }
+	public enum Modalidad {
+		PF, IN, OS, FA, SU
+	}
+
 	@NotNull(message = "La modalidad del contrato es obligatoria.")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "contratoModalidad", nullable = false)
 	private Modalidad contratoModalidad;
-	
 	@Lob
-	@NotBlank(message = "Bebe mencionar los detalles del contrato.")
+	@NotBlank(message = "Debe mencionar los detalles del contrato.")
 	@Column(name = "contratoDetalle", nullable = false)
 	private String contratoDetalle;
 
-	public enum Jornada {TC, TP}
+	public enum Jornada {
+		TC, TP
+	}
+
 	@NotNull(message = "La jornada del contrato es obligatoria.")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "contratoJornada", nullable = false)
@@ -71,14 +73,60 @@ public class Contrato {
 
 	@Future(message = "La fecha de finalización debe ser una fecha en el futuro.")
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	
 	@Column(name = "contratoFechaFin")
 	private LocalDate contratoFechaFin;
-	
-	public enum Estado {P, V, C}
+
+	public enum Estado {
+		P, V, C
+	}
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "contratoEstado", nullable = false)
 	private Estado contratoEstado;
-	
+
+	public String getEstado() {
+		if (contratoEstado == Estado.P) {
+			return "Pendiente";
+		} else if (contratoEstado == Estado.V) {
+			return "Vigente";
+		} else if (contratoEstado == Estado.C) {
+			return "Caducado";
+		} else {
+			return "No especificado";
+		}
+	}
+
+	public String getModalidad() {
+		if (contratoModalidad == Modalidad.PF) {
+			return "Plazo Fijo";
+		} else if (contratoModalidad == Modalidad.IN) {
+			return "Indefinido";
+		} else if (contratoModalidad == Modalidad.OS) {
+			return "Obra o Servicio";
+		} else if (contratoModalidad == Modalidad.FA) {
+			return "Formación o Aprendizaje";
+		} else if (contratoModalidad == Modalidad.SU) {
+			return "Suplencia";
+		} else {
+			return "No especificado";
+		}
+	}
+
+	public String getJornada() {
+		if (contratoJornada == Jornada.TC) {
+			return "Tiempo Completo";
+		} else if (contratoJornada == Jornada.TP) {
+			return "Tiempo Parcial";
+		} else {
+			return "No especificado";
+		}
+	}
+
+	public String getFechaFin() {
+		return contratoFechaFin != null ? contratoFechaFin.toString() : "Indefinido";
+	}
+
 	public Contrato() {
 		this.contratoId = 0;
 		this.contratoEmpleadoId = null;
@@ -92,10 +140,9 @@ public class Contrato {
 		this.contratoEstado = null;
 	}
 
-	public Contrato(Integer contratoId, Empleado contratoEmpleadoId, Area contratoAreaId,
-			Modalidad contratoModalidad, String contratoDetalle, Jornada contratoJornada,
-			BigDecimal contratoSalario,
-			LocalDate contratoFechaInicio, LocalDate contratoFechaFin, Estado contratoEstado) {
+	public Contrato(Integer contratoId, Empleado contratoEmpleadoId, Area contratoAreaId, Modalidad contratoModalidad,
+			String contratoDetalle, Jornada contratoJornada, BigDecimal contratoSalario, LocalDate contratoFechaInicio,
+			LocalDate contratoFechaFin, Estado contratoEstado) {
 		super();
 		this.contratoId = contratoId;
 		this.contratoEmpleadoId = contratoEmpleadoId;
@@ -188,36 +235,25 @@ public class Contrato {
 	public void setContratoEstado(Estado contratoEstado) {
 		this.contratoEstado = contratoEstado;
 	}
+	
+	public String getFechaFinFormater() {
+		if(contratoFechaFin == null) {
+			return "";
+		}
+        LocalDate fecha = LocalDate.parse(contratoFechaFin.toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return fecha.format(formatter);
+	}
 
 	@Override
 	public String toString() {
-	    return String.format(
-	        "Contrato {\n" +
-	        "  contratoId         : %s\n" +
-	        "  contratoEmpleadoId : %s\n" +
-	        "  contratoAreaId     : %s\n" +
-	        "  contratoModalidad  : %s\n" +
-	        "  contratoDetalle    : %s\n" +
-	        "  contratoJornada    : %s\n" +
-	        "  contratoSalario    : %.2f\n" +
-	        "  contratoFechaInicio: %s\n" +
-	        "  contratoFechaFin   : %s\n" +
-	        "  contratoEstado     : %s\n" +
-	        "}",
-	        contratoId, 
-	        contratoEmpleadoId, 
-	        contratoAreaId, 
-	        contratoModalidad, 
-	        contratoDetalle, 
-	        contratoJornada, 
-	        contratoSalario, 
-	        contratoFechaInicio, 
-	        contratoFechaFin, 
-	        contratoEstado
-	    );
+		return String.format("________________________________________________-\n" + "Contrato {\n"
+				+ "  contratoId         : %s\n" + "  contratoEmpleadoId : %s\n" + "  contratoAreaId     : %s\n"
+				+ "  contratoModalidad  : %s\n" + "  contratoDetalle    : %s\n" + "  contratoJornada    : %s\n"
+				+ "  contratoSalario    : %.2f\n" + "  contratoFechaInicio: %s\n" + "  contratoFechaFin   : %s\n"
+				+ "  contratoEstado     : %s\n" + "} \n" + "________________________________________________-\n",
+				contratoId, contratoEmpleadoId, contratoAreaId, contratoModalidad, contratoDetalle, contratoJornada,
+				contratoSalario, contratoFechaInicio, contratoFechaFin, contratoEstado);
 	}
 
-
-	
-	
 }

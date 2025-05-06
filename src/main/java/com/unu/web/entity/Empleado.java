@@ -16,6 +16,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -76,9 +77,21 @@ public class Empleado {
 	@Column(name = "empFechaNacimiento", nullable = false)
 	private LocalDate empFechaNacimiento;
 
+	@NotNull(message = "Debe Seleccionar una Foto para el empleado")
+	@Column(name = "empFoto", nullable = true)
+	private String empFoto;
+
 	@Lob
-	@Column(name = "empFoto", columnDefinition = "LONGBLOB", nullable = true)
-	private byte[] empFoto;
+	@Transient
+	private byte[] empFotoByte;
+
+	public byte[] getEmpFotoByte() {
+		return empFotoByte;
+	}
+
+	public void setEmpFotoByte(byte[] empFotoByte) {
+		this.empFotoByte = empFotoByte;
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "empBancoId", nullable = false)
@@ -98,20 +111,44 @@ public class Empleado {
 
 	@Column(name = "empFechaRegistro")
 	private LocalDate empFechaRegistro;
+
+	public String getEstado() {
+		boolean contratoVigente = empContratoId.stream()
+				.anyMatch(contrato -> contrato.getContratoEstado() == Contrato.Estado.V);
+
+		if (contratoVigente) {
+			this.empEstado = Estado.A;
+			return "Activo";
+		} else {
+			this.empEstado = Estado.I;
+			return "Inactivo";
+		}
+	}
 	
-    public String mostrarEstado() {
-        boolean contratoVigente = empContratoId.stream()
-                                                .anyMatch(contrato -> contrato.getContratoEstado() == Contrato.Estado.V);
-        
-        if (contratoVigente) {
-            this.empEstado = Estado.A;
-            return "Activo";
-        } else {
-            this.empEstado = Estado.I; 
-            return "Inactivo";
-        }
-    }
+	public String getGenero() {
+	    if (empGenero == Genero.M) {
+	        return "Masculino";
+	    } else if (empGenero == Genero.F) {
+	        return "Femenino";
+	    } else {
+	        return "No especificado";
+	    }
+	}
 	
+	public String getEstadoCivil() {
+	    if (empEstadoCivil == EstadoCivil.S) {
+	        return "Soltero";
+	    } else if (empEstadoCivil == EstadoCivil.C) {
+	        return "Casado";
+	    }  else if (empEstadoCivil == EstadoCivil.D) {
+	        return "Divorciado";
+	    }   else if (empEstadoCivil == EstadoCivil.V) {
+	        return "Viudo";
+	    }else {
+	        return "No especificado";
+	    }
+	}
+
 	public String calcularAntiguedad() {
 
 		if (empFechaRegistro == null) {
@@ -147,7 +184,7 @@ public class Empleado {
 		return resultado.toString();
 	}
 
-	public int calcularEdad() {
+	public int getEdad() {
 
 		if (empFechaNacimiento == null) {
 			throw new IllegalArgumentException("La fecha de nacimiento no puede ser nula.");
@@ -179,7 +216,7 @@ public class Empleado {
 
 	public Empleado(String empCodigo, String empDni, String empNombres, String empApellidoPaterno,
 			String empApellidoMaterno, Genero empGenero, EstadoCivil empEstadoCivil, LocalDate empFechaNacimiento,
-			byte[] empFoto, Banco empBancoId, Estado empEstado, LocalDate empFechaRegistro) {
+			String empFoto, Banco empBancoId, Estado empEstado, LocalDate empFechaRegistro) {
 		super();
 		this.empCodigo = empCodigo;
 		this.empDni = empDni;
@@ -234,6 +271,17 @@ public class Empleado {
 	public void setEmpApellidoMaterno(String empApellidoMaterno) {
 		this.empApellidoMaterno = empApellidoMaterno;
 	}
+	
+	public String getNombreApellidos() {
+	    return capitalize(this.empNombres) + " " + capitalize(this.empApellidoPaterno) + " " + capitalize(this.empApellidoMaterno);
+	}
+
+	private String capitalize(String palabra) {
+	    if (palabra == null || palabra.isEmpty()) {
+	        return palabra;
+	    }
+	    return palabra.substring(0, 1).toUpperCase() + palabra.substring(1).toLowerCase();
+	}
 
 	public Genero getEmpGenero() {
 		return empGenero;
@@ -242,6 +290,8 @@ public class Empleado {
 	public void setEmpGenero(Genero empGenero) {
 		this.empGenero = empGenero;
 	}
+	
+	
 
 	public EstadoCivil getEmpEstadoCivil() {
 		return empEstadoCivil;
@@ -259,11 +309,11 @@ public class Empleado {
 		this.empFechaNacimiento = empFechaNacimiento;
 	}
 
-	public byte[] getEmpFoto() {
+	public String getEmpFoto() {
 		return empFoto;
 	}
 
-	public void setEmpFoto(byte[] empFoto) {
+	public void setEmpFoto(String empFoto) {
 		this.empFoto = empFoto;
 	}
 
@@ -293,39 +343,14 @@ public class Empleado {
 
 	@Override
 	public String toString() {
-	    return String.format(
-	        "Empleado {\n" +
-	        "  empCodigo           : %s\n" +
-	        "  empDni              : %s\n" +
-	        "  empNombres          : %s\n" +
-	        "  empApellidoPaterno  : %s\n" +
-	        "  empApellidoMaterno  : %s\n" +
-	        "  empGenero           : %s\n" +
-	        "  empEstadoCivil      : %s\n" +
-	        "  empFechaNacimiento  : %s\n" +
-	        "  empFoto             : %s\n" +
-	        "  empBancoId          : %s\n" +
-	        "  empContratoId       : %s\n" +
-	        "  empEstado           : %s\n" +
-	        "  empFechaRegistro    : %s\n" +
-	        "}",
-	        empCodigo, 
-	        empDni, 
-	        empNombres, 
-	        empApellidoPaterno, 
-	        empApellidoMaterno, 
-	        empGenero, 
-	        empEstadoCivil, 
-	        empFechaNacimiento, 
-	        empFoto != null ? Arrays.toString(empFoto) : "null", // Mostrar la foto como un array de bytes
-	        empBancoId, 
-	        empContratoId != null ? empContratoId.toString() : "null", // Asegurarse de que empContratoId no sea null
-	        empEstado, 
-	        empFechaRegistro
-	    );
+		return String.format("________________________________________________________\n" + "Empleado {\n"
+				+ "  empCodigo           : %s\n" + "  empDni              : %s\n" + "  empNombres          : %s\n"
+				+ "  empApellidoPaterno  : %s\n" + "  empApellidoMaterno  : %s\n" + "  empGenero           : %s\n"
+				+ "  empEstadoCivil      : %s\n" + "  empFechaNacimiento  : %s\n" + "  empFoto             : %s\n"
+				+ "  empBancoId          : %s\n" + "  empEstado           : %s\n" + "  empFechaRegistro    : %s\n"
+				+ "} \n" + "________________________________________________________\n", empCodigo, empDni, empNombres,
+				empApellidoPaterno, empApellidoMaterno, empGenero, empEstadoCivil, empFechaNacimiento, empFoto,
+				empBancoId, empEstado, empFechaRegistro);
 	}
-
-	
-	
 
 }

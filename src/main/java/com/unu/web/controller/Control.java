@@ -7,17 +7,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class Control {
 
-	@GetMapping("/")
-	public ModelAndView DirigirPaginaInicio() {
-		ModelAndView modelAndView = new ModelAndView("Inicio");
-		return modelAndView;
-	}
-	
-	@GetMapping("/Empleado")
-	public String Productor() {
-		return "redirect:/Dashboard/Productor/ListaProductor";
-	}
-
-	
+    @GetMapping("/")
+    public String redirigirAlLogin() {
+        return "redirect:/Login";
+    }
 
 }

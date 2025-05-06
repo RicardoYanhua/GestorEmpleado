@@ -13,13 +13,19 @@ import com.unu.web.entity.Empleado;
 public interface ContratoRepository extends JpaRepository<Contrato, Serializable> {
 
 	@Query("SELECT c FROM Contrato c WHERE c.contratoEmpleadoId = :emp")
-	List<Contrato> ListaContratoPorEmpleado(@Param("emp") Empleado empleado);
+	public List<Contrato> ListaContratoPorEmpleado(@Param("emp") Empleado empleado);
 	
 	@Query("SELECT c FROM Contrato c")
 	public List<Contrato> ObtenerContratosFechas();
 	
 	@Query("SELECT COUNT(c) > 0 FROM Contrato c WHERE c.contratoEstado IN ('V', 'P') AND c.contratoEmpleadoId = :emp")
+    public boolean TieneContrato(@Param("emp") Empleado empleadoId);
 	
-    boolean TieneContrato(@Param("emp") Empleado empleadoId);
+	@Query("SELECT c FROM Contrato c WHERE c.contratoEstado IN ('C') AND c.contratoEmpleadoId = :emp")
+	public List<Contrato> ListarContratosEmpleadoCaducados(@Param("emp") Empleado empleadoId);
+	
+	@Query("SELECT c FROM Contrato c WHERE c.contratoEstado IN ('V', 'P') AND c.contratoEmpleadoId = :emp")
+	
+    public Contrato ObtenerContrato(@Param("emp") Empleado empleadoId);
 	
 }

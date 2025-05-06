@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" pageEncoding="UTF-8">
+<title>Nuevo Area</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+	crossorigin="anonymous"></script>
+
+<!-- Enlaces a hojas de estilo locales -->
+<link href="/Styles/MenuStyle.css" rel="stylesheet">
+<link href="/Styles/Componente.css" rel="stylesheet">
+<script src="/Scripts/MenuScript.js"></script>
+
+</head>
+
+<body>
+
+	<div class="Container">
+
+		<div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container"
+			class="Menu-container"></div>
+
+		<div th:insert="Componentes/Menu :: Menu-Header"></div>
+
+		<div class="Main-container container-fluid py-4">
+
+			<strong>Lista Area</strong>
+
+			<table class="table">
+
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nombre</th>
+						<th>Salario Base</th>
+						<th>Operacion</th>
+
+					</tr>
+
+				</thead>
+
+				<tbody>
+					<tr th:each="area: ${listaAreas}">
+
+						<td th:text="${area.areaId}"></td>
+						<td th:text="${area.areaNombre}"></td>
+						<td th:text="${area.areaSalrioBase}"></td>
+						<td><a type="button" class="btn btn-primary"
+							th:href="@{/Area/Editar}"> Editar Salario </a></td>
+
+					</tr>
+				</tbody>
+
+			</table>
+
+
+		</div>
+	</div>
+
+	<script>
+		setActiveByIndex(2);
+	</script>
+</body>
+
+</html>
+
+

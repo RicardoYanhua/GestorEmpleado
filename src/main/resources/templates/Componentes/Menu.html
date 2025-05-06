@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title></title>
+</head>
+
+<body>
+	<!-- Fragmento de menú lateral -->
+	<div th:fragment="MenuItems"
+		class="MenuItems h-100 d-flex flex-column justify-content-between">
+		<div class="">
+			<button id="ToggleMenuBtn"
+				class="btn-icon-toggle-menu icon-toggle-menu"
+				onclick="ToggleMenuAction()"></button>
+
+			<div id="LogoContainer" class="Logo-container">
+				<img src="/SVG/logo.svg" alt="Logo" width="24" height="24"> <span
+					id="TextLogo" class="text-nowrap text-dark fw-bold">Control
+					Manager</span>
+			</div>
+
+			<div class="d-flex flex-column gap-1">
+
+				<a class="MenuButton" th:href="@{/Empleado}"> <img
+					src="/SVG/empleado.svg" alt="ClientesIcon"> <span
+					class="text-nowrap">Empleado</span>
+
+
+				</a> <a class="MenuButton" th:href="@{/Banco}"> <img
+					src="/SVG/banco.svg" alt="ProductosIcon"> <span>Banco</span>
+				</a> <a class="MenuButton" th:href="@{/Area}"> <img
+					src="/SVG/area.svg" alt="VentasIcon"> <span>Area</span>
+				</a> <a class="MenuButton" href="#"> <img
+					src="/SVG/acceso.svg" alt="SesionIcon" class="menu-icon"> <span>Acceso</span>
+				</a>
+
+			</div>
+		</div>
+
+		<!-- Información de usuario -->
+
+
+
+		<a class="btn btn-primary  rounded-3 mt-5 py-1 fs-6 fw-bold"
+			th:href="@{/Logout}"> <img alt="" src="/SVG/cerrarsesion.svg"
+			width="30" height="30">
+		</a>
+
+
+
+	</div>
+
+	<!-- Fragmento de encabezado de menú -->
+	<div th:fragment="Menu-Header">
+		<nav id="NavBarHeader" class="navbar bg-white shadow fixed-top">
+			<div class="container px-4">
+				<a class="Logo-header navbar-brand text-nowrap text-dark fw-bold"
+					href="#"> <img src="/SVG/logo.svg" alt="Logo" width="24"
+					height="24" class="d-inline-block align-text-top">Control
+					Manager
+				</a>
+				<button id="ButtonHeader" type="button" class="btn btn-outline-primary"
+					data-bs-toggle="modal" data-bs-target="#overlayPanel">☰</button>
+
+				<!-- Modal -->
+				<div class="modal fade modal-sm" id="overlayPanel" tabindex="-1"
+					aria-labelledby="overlayPanelLabel" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered container">
+						<div class="modal-content">
+							<div class="modal-header">
+								<span class="lead ms-4 fw-bold">Menú</span>
+								<button type="button" class="btn-close" data-bs-dismiss="modal"
+									aria-label="Cerrar"></button>
+							</div>
+							<div class="modal-body">
+								<div th:replace="~{::MenuItems}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<!-- Fragmento de barra lateral del menú -->
+	<div th:unless="${isActivedCompra}" th:fragment="Menu-Sidebar"
+		class="h-100">
+		<div th:replace="~{::MenuItems}"></div>
+	</div>
+
+</body>
+
+</html>

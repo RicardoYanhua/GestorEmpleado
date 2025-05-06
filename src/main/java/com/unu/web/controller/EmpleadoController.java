@@ -1,16 +1,15 @@
 package com.unu.web.controller;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.SecureRandom;
-import java.sql.SQLException;
-import javax.sql.rowset.serial.SerialException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,7 +25,12 @@ import com.unu.web.service.BancoService;
 import com.unu.web.service.EmpleadoService;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import java.net.MalformedURLException;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/Empleado")
@@ -44,23 +48,28 @@ public class EmpleadoController {
 	public String Main() {
 		return "redirect:/Empleado/Lista";
 	}
-	
-	@GetMapping("/Foto/{CodigoEmpleado}")
+	@GetMapping("")
+	public String Main2() {
+		return "redirect:/Empleado/Lista";
+	}
+
+	@GetMapping("/FotoEmpleado/{nombre}")
 	@ResponseBody
-	public ResponseEntity<byte[]> obtenerFoto(@PathVariable String CodigoEmpleado) {
-	    Empleado emp = empleadoService.ObtenerEmpleado(CodigoEmpleado);
-	    if (emp != null && emp.getEmpFoto() != null) {
-	        byte[] foto = emp.getEmpFoto();
-	        return ResponseEntity.ok()
-	                .contentType(MediaType.IMAGE_JPEG) // o cualquier tipo de imagen que tengas
-	                .body(foto);
+	public ResponseEntity<Resource> verFoto(@PathVariable String nombre) throws MalformedURLException {
+	    Path rutaArchivo = Paths.get("C:", "uploads", "FotoEmpleados").resolve(nombre).toAbsolutePath();
+	    Resource recurso = new UrlResource(rutaArchivo.toUri());
+
+	    if (!recurso.exists() || !recurso.isReadable()) {
+	        throw new RuntimeException("No se puede cargar la imagen: " + nombre);
 	    }
-	    return ResponseEntity.notFound().build();
+	    return ResponseEntity.ok()
+	            .contentType(MediaType.IMAGE_JPEG)
+	            .body(recurso);
 	}
 	
 	@GetMapping("/Lista")
 	public ModelAndView Lista(@RequestParam(value = "Busqueda", required = false, defaultValue = "") String busqueda,
-			@RequestParam(value = "Filtro", required = false, defaultValue = "") String filtro, Pageable paginacion) {
+			@RequestParam(value = "Filtro", required = false, defaultValue = "Todo") String filtro, Pageable paginacion) {
 		ModelAndView modelAndView = new ModelAndView("Empleado/ListaEmpleado");
 		Page Pagina = empleadoService.ListarEmpleado(paginacion, busqueda, filtro);
 		modelAndView.addObject("ListaEmpleados", Pagina.getContent());
@@ -80,16 +89,40 @@ public class EmpleadoController {
 	}
 
 	@PostMapping("/Editar/{CodigoEmpleado}")
-	public ModelAndView Actualizar(@PathVariable(name = "CodigoEmpleado") String codigoEmpleado,
-			@Valid @ModelAttribute(name = "EditarEmpleado") Empleado empleado, BindingResult result) {
+	public ModelAndView Actualizar(
+			@RequestParam(name = "empFotoFile") MultipartFile file,
+			@PathVariable(name = "CodigoEmpleado") String codigoEmpleado,
+			@Valid @ModelAttribute(name = "EditarEmpleado") Empleado empleado, BindingResult result) throws IOException {
 
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("Bancos", bancoService.ListarBanco());
-
+		
+		
+		if (!file.isEmpty()) {
+			empleado.setEmpFotoByte(file.getBytes());
+			empleado.setEmpFoto(file.getOriginalFilename());
+		}
+		boolean FotoValidation = true;
+		
+		if (empleado.getEmpFoto() == null || empleado.getEmpFoto().equals("")) {
+			modelAndView.addObject("ErrorFoto", "Debe seleccionar una Foto para el empleado.");
+			FotoValidation = false;
+		}else {
+			modelAndView.addObject("FotoSuccess", true);
+		}
+		
 		if (result.hasErrors()) {
 			modelAndView.setViewName("Empleado/EditarEmpleado");
 			return modelAndView;
 		}
+		
+		Path directorioImagenes = Paths.get("C:", "uploads", "FotoEmpleados");
+		if (!Files.exists(directorioImagenes)) {
+		    Files.createDirectories(directorioImagenes);
+		}
+		
+		Path rutaCompleta = directorioImagenes.resolve(empleado.getEmpFoto());
+		Files.write(rutaCompleta, empleado.getEmpFotoByte());
 
 		empleadoService.ActualizarEmpleado(empleado);
 		modelAndView.setViewName("redirect:/Empleado/Lista");
@@ -107,37 +140,50 @@ public class EmpleadoController {
 	}
 
 	@PostMapping("/Nuevo")
-	public ModelAndView Insertar(
-			@RequestParam(name = "Foto") MultipartFile file,
-			@Valid @ModelAttribute(name = "NuevoEmpleado") Empleado empleado, 
-			BindingResult result)
-			throws IOException, SerialException, SQLException {
+	public ModelAndView Insertar(@RequestParam(name = "empFotoFile") MultipartFile file,
+			@Valid @ModelAttribute(name = "NuevoEmpleado") Empleado empleado, BindingResult result) throws IOException {
+		
 		ModelAndView modelAndView = new ModelAndView();
-
-		modelAndView.addObject("Bancos", bancoService.ListarBanco());
-
-		
-		
-		
 		boolean DniValidation = true;
-		if (empleadoService.ValidarExistDni(empleado.getEmpDni()) && empleado.getEmpDni().length() == 8) {
+		if (empleadoService.ValidarExistDni(empleado.getEmpDni())) {
 			modelAndView.addObject("ErrorDni", "El DNI ya está registrado.");
 			DniValidation = false;
 		}
 
-		if (result.hasErrors() || !DniValidation) {
-			modelAndView.setViewName("Empleado/NuevoEmpleado");
-			return modelAndView;
-			
+		if (!file.isEmpty()) {
+			empleado.setEmpFotoByte(file.getBytes());
+			empleado.setEmpFoto(file.getOriginalFilename());
+		}
+		boolean FotoValidation = true;
+		
+		if (empleado.getEmpFoto() == null || empleado.getEmpFoto().equals("")) {
+			modelAndView.addObject("ErrorFoto", "Debe seleccionar una Foto para el empleado.");
+			FotoValidation = false;
+		}else {
+			modelAndView.addObject("FotoSuccess", true);
 		}
 		
-		byte[] bytes =  file.getBytes();
-		empleado.setEmpFoto(bytes);
+		if (result.hasErrors() || !DniValidation || !FotoValidation) {
+			modelAndView.addObject("Bancos", bancoService.ListarBanco());
+			modelAndView.setViewName("Empleado/NuevoEmpleado");
+			return modelAndView;
+		}
+
+		Path directorioImagenes = Paths.get("C:", "uploads", "FotoEmpleados");
+		if (!Files.exists(directorioImagenes)) {
+		    Files.createDirectories(directorioImagenes);
+		}
 		
+		Path rutaCompleta = directorioImagenes.resolve(empleado.getEmpFoto());
+		Files.write(rutaCompleta, empleado.getEmpFotoByte());
+
 		empleadoService.InsertarEmpleado(empleado);
+		
 		modelAndView.setViewName("redirect:/Empleado/Lista");
 		return modelAndView;
 	}
+	
+	
 
 	public String GenerarNuevoCodigoEmpleado() {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

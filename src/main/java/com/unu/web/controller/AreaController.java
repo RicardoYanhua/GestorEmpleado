@@ -24,9 +24,22 @@ public class AreaController {
 	@Qualifier("areaService")
 	private AreaService areaService;
 
+	
 	@GetMapping("/")
 	public String Main() {
-		return "redirect:/Area/Lista";
+		return "redirect:/Area/Nuevo";
+	}
+	@GetMapping("")
+	public String Main2() {
+		return "redirect:/Area/Nuevo";
+	}
+	
+	@GetMapping("/Listar")
+	public ModelAndView Listar() {
+		ModelAndView modelAndView = new ModelAndView("Area/ListaArea");
+		modelAndView.addObject("listaAreas", areaService.ListarArea());
+
+		return modelAndView;
 	}
 
 	@GetMapping("/Nuevo")

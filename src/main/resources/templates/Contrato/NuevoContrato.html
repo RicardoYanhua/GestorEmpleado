@@ -15,62 +15,62 @@
 	crossorigin="anonymous"></script>
 
 
-<link
-	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-	rel="stylesheet">
+<!-- Flatpickr base CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Flatpickr base JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
-<!-- Archivo de idioma en español -->
+
+<!-- Month select plugin CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+
+<!-- Month select plugin JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+<!-- Enlaces a hojas de estilo locales -->
+<link href="/Styles/MenuStyle.css" rel="stylesheet">
+<link href="/Styles/Componente.css" rel="stylesheet">
 
 
+
+<script src="/Scripts/MenuScript.js"></script>
 </head>
 
 <body>
+<div class="Container">
 
-    <form th:action="@{/Contrato/Nuevo}" th:object="${NuevoContrato}"
-        method="post" class="container w-50">
+		<div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container"
+			class="Menu-container"></div>
 
-        <h6 class="mb-3 lead text-white bg-success shadow py-3 ps-3 rounded-3 fw-bold">
-            Registrar Nuevo Contrato
-        </h6>
-        
-        <input type="hidden" th:field="*{contratoEmpleadoId.empCodigo}" />
+		<div th:insert="Componentes/Menu :: Menu-Header"></div>
 
+		<div class="Main-container container-fluid py-4">
+    <form th:action="@{/Contrato/Nuevo}" th:object="${NuevoContrato}" method="post" class="container w-75" id="nuevoContratoForm">
+    <h6 class="mb-3 lead bg-warning shadow py-3 ps-3 rounded-3 fw-bold">
+        Nuevo Contrato
+    </h6>
+
+    <input type="hidden" th:field="*{contratoEmpleadoId.empCodigo}" />
+    <input type="hidden" th:field="*{contratoEstado}" />
+
+    <div class="row mb-3">
         <!-- Área -->
-        <div class="mb-3">
-            <label for="banco" class="form-label">Área</label>
-            <select class="form-select" id="banco" th:field="*{contratoAreaId}">
+        <div class="col-md-6">
+            <label for="banco" class="form-label fw-bold">Área</label>
+            <select class="form-select" id="banco" th:field="*{contratoAreaId}" onchange="updateSalario()">
                 <option value="" selected>Seleccione un Área</option>
                 <option th:each="area : ${Areas}" th:value="${area.areaId}"
-                    th:text="${area.areaNombre} + ' | ' + ${area.areaSalarioBase}">
+                        th:data-salario="${area.areaSalarioBase}"
+                        th:text="${area.areaNombre} + ' | ' + ${area.areaSalarioBase}">
                 </option>
             </select>
-            
-            <div th:if="${#fields.hasErrors('contratoAreaId')}" th:errors="*{contratoAreaId}" class="text-danger"></div>
-        </div>
-
-        <!-- Salario -->
-        <div class="mb-3">
-            <label for="ContratoSalario" class="form-label">Salario</label>
-            <input type="text" class="form-control" id="ContratoSalario"
-                th:field="*{contratoSalario}" placeholder="Ingrese salario del contrato"
-                autocomplete="off">
-                <div th:if="${#fields.hasErrors('contratoSalario')}" th:errors="*{contratoSalario}" class="text-danger"></div>
-        </div>
-
-        <!-- Detalles -->
-        <div class="mb-3">
-            <label for="ContratoDetalle" class="form-label">Detalles</label>
-            <input type="text" class="form-control" id="ContratoDetalle"
-                th:field="*{contratoDetalle}" placeholder="Ingrese los detalles del contrato"
-                autocomplete="off">
-                <div th:if="${#fields.hasErrors('contratoDetalle')}" th:errors="*{contratoDetalle}" class="text-danger"></div>
+            <div th:if="${#fields.hasErrors('contratoAreaId')}" th:errors="*{contratoAreaId}" class="text-danger fs-9"></div>
         </div>
 
         <!-- Modalidad -->
-        <div class="mb-3">
-            <label for="ContratoModalidad" class="form-label">Modalidad</label>
-            <select class="form-select" id="ContratoModalidad" th:field="*{contratoModalidad}">
+        <div class="col-md-6">
+            <label for="ContratoModalidad" class="form-label fw-bold">Modalidad</label>
+            <select class="form-select" id="ContratoModalidad" th:field="*{contratoModalidad}" onchange="toggleFechaFinalizacion()">
                 <option value="" selected>Seleccione una modalidad de trabajo</option>
                 <option value="FA">Formación o Aprendizaje</option>
                 <option value="PF">Plazo Fijo</option>
@@ -78,62 +78,204 @@
                 <option value="OS">Obra o Servicio</option>
                 <option value="SU">Suplencia</option>
             </select>
-            <div th:if="${#fields.hasErrors('contratoModalidad')}" th:errors="*{contratoModalidad}" class="text-danger"></div>
+            <div th:if="${#fields.hasErrors('contratoModalidad')}" th:errors="*{contratoModalidad}" class="text-danger fs-9"></div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <!-- Salario -->
+        <div class="col-md-6">
+            <label for="ContratoSalario" class="form-label fw-bold">Salario</label>
+            <input type="text" class="form-control" id="ContratoSalario" th:field="*{contratoSalario}"
+                   placeholder="Ingrese salario del contrato" autocomplete="off" readonly="readonly">
+            
+            <div th:if="${#fields.hasErrors('contratoSalario')}" th:errors="*{contratoSalario}" class="text-danger fs-9"></div>
+            <div id="errorSalario" class="text-danger fs-9" style="display: none;">
+        El salario ingresado debe ser mayor o igual al salario base del área seleccionada.
+    </div>
         </div>
 
         <!-- Fecha de Inicio -->
-        <div class="mb-3">
-            <label for="ContratoFechaInicio" class="form-label">Fecha de Inicio</label>
-            <input type="text" class="form-control" id="ContratoFechaInicio"
-                th:field="*{contratoFechaInicio}" placeholder="Ingrese fecha de inicio.">
-            <div th:if="${#fields.hasErrors('contratoFechaInicio')}" th:errors="*{contratoFechaInicio}" class="text-danger"></div>
-        
+        <div class="col-md-6">
+            <label for="ContratoFechaInicio" class="form-label fw-bold">Fecha de Inicio</label>
+            <input type="text" class="form-control" id="ContratoFechaInicio" th:field="*{contratoFechaInicio}"
+                   placeholder="Ingrese fecha de inicio.">
+            <div th:if="${#fields.hasErrors('contratoFechaInicio')}" th:errors="*{contratoFechaInicio}" class="text-danger fs-9"></div>
         </div>
+    </div>
+
+    <div class="row mb-3">
+        <!-- Detalles -->
+    <div class="col-md-6">
+        <label for="ContratoDetalle" class="form-label fw-bold">Detalles</label>
+        <textarea class="form-control" id="ContratoDetalle" th:field="*{contratoDetalle}" 
+                  placeholder="Ingrese los detalles del contrato" autocomplete="off" rows="4"></textarea>
+        <div th:if="${#fields.hasErrors('contratoDetalle')}" th:errors="*{contratoDetalle}" class="text-danger fs-9"></div>
+    </div>
 
         <!-- Fecha de Finalización -->
-        <div class="mb-3">
-            <label for="ContratoFechaFin" class="form-label">Fecha de Finalización</label>
+        <div class="col-md-6" id="fechaFinalizacionDiv">
+            <label for="ContratoFechaFin" class="form-label fw-bold">Fecha de Finalización</label>
             <input type="text" class="form-control" id="ContratoFechaFin"
-                th:field="*{contratoFechaFin}" placeholder="Ingrese fecha de finalización.">
-             <div th:if="${#fields.hasErrors('contratoFechaFin')}" th:errors="*{contratoFechaFin}" class="text-danger"></div>
-        
+                   placeholder="Seleccionar fecha de finalizacion">
+            <strong>Fin:</strong> <span id = "verFecha" th:text= "${NuevoContrato.getFechaFinFormater()}"></span>
+                   
+            <!-- Campo oculto que se enviará al controlador -->
+    <input type="hidden" id="ContratoFechaFinHidden" th:field="*{contratoFechaFin}">
+         
+         
+            
+            <div th:if="${#fields.hasErrors('contratoFechaFin')}" th:errors="*{contratoFechaFin}" class="text-danger fs-9"></div>
+        	<div th:if="${ErrorFechas != ''}">
+        <span th:text="${ErrorFechas}" class="text-danger fs-9"></span>
+    </div>
         </div>
-        
-        <div th:if="${ErrorFechas != ''}">
-							<span th:text="${ErrorFechas}" class="text-danger"></span>
-						</div>
+    </div>
 
+    <div class="row mb-3">
         <!-- Jornada Laboral -->
-        <div class="mb-3">
-            <label class="form-label">Jornada Laboral</label>
-            <div class="d-flex gap-5">
+        <div class="col-md-6">
+            <label class="form-label fw-bold">Jornada Laboral</label>
+            <div class="d-flex gap-3">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio"
-                        th:field="*{contratoJornada}" id="JornadaCompleto" value="TC">
-                    <label class="form-check-label" for="JornadaCompleto">
-                        Tiempo Completo
-                    </label>
+                    <input class="form-check-input" type="radio" th:field="*{contratoJornada}" id="JornadaCompleto" value="TC">
+                    <label class="form-check-label" for="JornadaCompleto">Tiempo Completo</label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio"
-                        th:field="*{contratoJornada}" id="JornadaParcial" value="TP">
-                    <label class="form-check-label" for="JornadaParcial">
-                        Tiempo Parcial
-                    </label>
+                    <input class="form-check-input" type="radio" th:field="*{contratoJornada}" id="JornadaParcial" value="TP">
+                    <label class="form-check-label" for="JornadaParcial">Tiempo Parcial</label>
                 </div>
             </div>
-           <div th:if="${#fields.hasErrors('contratoJornada')}" th:errors="*{contratoJornada}" class="text-danger"></div>
-        
+            <div th:if="${#fields.hasErrors('contratoJornada')}" th:errors="*{contratoJornada}" class="text-danger fs-9"></div>
         </div>
+    </div>
 
-        <!-- Botones -->
-        <div class="mb-3 d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <a class="btn btn-warning fw-bold" href="#">Cancelar</a>
-        </div>
+    <!-- Botones -->
+    <div class="d-flex gap-2 justify-content-end">
+        <button type="submit" class="btn btn-warning">Guardar</button>
+        <a class="btn btn-outline-secondary rounded-3"
+           th:href="@{/Contrato/Lista(CodigoEmpleado=${NuevoContrato.contratoEmpleadoId.empCodigo})}">
+            Cancelar
+        </a>
+    </div>
 
-    </form>
+    <!-- Div para mostrar el error de salario -->
+    
+</form>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fechaInicioInput = document.getElementById('ContratoFechaInicio');
+    const fechaFinInput = document.getElementById('ContratoFechaFin');
+    const fechaFinHiddenInput = document.getElementById('ContratoFechaFinHidden');
+    const fechaFinVer = document.getElementById('verFecha');
+
+    function obtenerUltimoDiaDelMes(mes, anio) {
+        return new Date(anio, mes, 0).getDate(); // El día 0 del siguiente mes da el último día del actual
+    }
+
+    function actualizarFechaFin() {
+        const fechaInicio = fechaInicioInput.value.trim();
+        const fechaFin = fechaFinInput.value.trim();
+
+        const regexInicio = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$/; // dd-MM-yyyy
+        const regexFin = /^(0[1-9]|1[0-2])-(\d{4})$/; // MM-yyyy
+
+        fechaFinHiddenInput.value = '';
+
+        if (regexInicio.test(fechaInicio) && regexFin.test(fechaFin)) {
+            let [diaInicio, mesInicio, anioInicio] = fechaInicio.split('-');
+            let [mesFin, anioFin] = fechaFin.split('-');
+
+            diaInicio = parseInt(diaInicio);
+            mesFin = parseInt(mesFin);
+            anioFin = parseInt(anioFin);
+
+            const ultimoDiaMesFin = obtenerUltimoDiaDelMes(mesFin, anioFin);
+            const diaFinal = Math.min(diaInicio, ultimoDiaMesFin).toString().padStart(2, '0');
+            const mesFinal = mesFin.toString().padStart(2, '0');
+
+            const fechaFinalValida = `${diaFinal}-${mesFinal}-${anioFin}`;
+            fechaFinHiddenInput.value = fechaFinalValida;
+            fechaFinVer.innerText = fechaFinalValida;
+
+            console.log("Fecha final válida:", fechaFinalValida);
+        } else {
+            console.warn("Formato inválido: inicio debe ser dd-MM-yyyy, fin debe ser MM-yyyy");
+        }
+    }
+
+    fechaInicioInput.addEventListener('input', actualizarFechaFin);
+    fechaFinInput.addEventListener('input', actualizarFechaFin);
+
+   
+});
+</script>
+
+
+<script>
+    // Función que actualiza el salario según el área seleccionada
+    function updateSalario() {
+        var selectArea = document.getElementById("banco");
+        var salarioInput = document.getElementById("ContratoSalario");
+
+        // Obtener el salario del área seleccionado
+        var selectedOption = selectArea.options[selectArea.selectedIndex];
+        var salario = selectedOption.getAttribute('data-salario');
+
+        // Establecer el salario en el input
+        salarioInput.value = salario;
+
+        // Ocultar el mensaje de error si el usuario cambia el área
+        document.getElementById("errorSalario").style.display = "none";
+    }
+
+    // Validación del salario antes de enviar el formulario
+    document.getElementById("nuevoContratoForm").addEventListener("submit", function(event) {
+        var salarioInput = document.getElementById("ContratoSalario");
+        var salarioIngresado = parseFloat(salarioInput.value);
+        var selectArea = document.getElementById("banco");
+        var selectedOption = selectArea.options[selectArea.selectedIndex];
+        var salarioBase = parseFloat(selectedOption.getAttribute('data-salario'));
+
+        // Validar si el salario ingresado es mayor o igual al salario base del área
+        if (salarioIngresado < salarioBase) {
+            // Mostrar el mensaje de error
+            document.getElementById("errorSalario").style.display = "block";
+            event.preventDefault(); // Evitar el envío del formulario
+        }
+    });
+
+    // Función que muestra u oculta el campo de fecha de finalización
+    function toggleFechaFinalizacion() {
+        var modalidadSelect = document.getElementById("ContratoModalidad");
+        var fechaFinalizacionDiv = document.getElementById("fechaFinalizacionDiv");
+        var modalidadSeleccionada = modalidadSelect.value;
+
+        // Si la modalidad es "Indefinido", ocultar el campo de fecha de finalización
+        if (modalidadSeleccionada === "IN") {
+            fechaFinalizacionDiv.style.display = "none";
+            document.getElementById("ContratoFechaFin").value = ""; // Limpiar el valor del input
+            document.getElementById("ContratoFechaFin").value = null; // O ponerlo en null
+        } else {
+            fechaFinalizacionDiv.style.display = "block";
+        }
+    }
+
+    // Llamar a la función para ajustar la visibilidad de la fecha de finalización al cargar la página
+    window.onload = toggleFechaFinalizacion;
+</script>
+
+
+
+    </div>
+    </div>
+    
+    
+    
+    
+   
+    
     <script>
         flatpickr("#ContratoFechaInicio", {
             dateFormat: "d-m-Y",
@@ -142,11 +284,20 @@
         });
 
         flatpickr("#ContratoFechaFin", {
-            dateFormat: "d-m-Y",
-            minDate: "today",
-            locale: "es"
-        });
+        	dateFormat: "d-m-Y",
+            plugins: [
+              new monthSelectPlugin({
+                shorthand: true,       // Muestra nombres cortos del mes (ene, feb, ...)
+                dateFormat: "m-Y",     // Valor del input
+                altFormat: "F Y"       // Vista amigable (ej. mayo 2025)
+              })
+            ]
+          });
+        setActiveByIndex(0);
     </script>
+    
+    
+    
 
 </body>
 

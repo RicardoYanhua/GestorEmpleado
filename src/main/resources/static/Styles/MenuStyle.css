@@ -1,0 +1,206 @@
+@charset "UTF-8";
+
+:root {
+	--MenuPadding: 15px 10px;
+	--MenuBackgroundColor: rgb(255,255,255);
+	--MenuItemBackgroundColorCursorSelected: rgb(220, 220, 220);
+	--MenuItemForegroundColorCursorSelected: rgb(34, 34, 34);
+	--MenuItemBackgroundColorSelected: rgb(34, 34, 34);
+	--MenuItemForegroundColorSelected: rgb(255, 255, 255);
+	--MenuBorderContainer: 8px;
+}
+
+html, body {
+	height: 100vh;
+	margin: 0;
+	overflow: hidden;
+}
+
+body {
+	background-color: rgb(60,60,60);
+	padding: 3px 3px;
+}
+
+.Container {
+	display: flex;
+	height: 100%;
+	padding: 10px 5px;
+	background-color: rgb(245,245,255);
+	overflow: hidden;
+	border-radius: 12px;
+	transition: all 0.3s ease;
+	gap: 15px;
+}
+
+.Menu-container {
+	border-radius: var(--MenuBorderContainer);
+	background-color: var(--MenuBackgroundColor);
+	padding: var(--MenuPadding);
+	border:1px solid rgb(54, 124, 236, 0.1);
+	width: 270px;
+	height: 100%; /* 👈️ Esto asegura que ocupe el alto completo del .Container */
+	position: relative;
+	box-shadow: 0 4px 4px rgb(54, 124, 236, 0.3);
+}
+
+.Main-container {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	height: 100%;         /* 👈️ Ocupará todo el alto disponible */
+	overflow-y: auto;     /* 👈️ Scroll vertical si el contenido se desborda */
+}
+
+
+.navbar {
+	height: 60px;
+}
+
+#ToggleMenuBtn {
+	position: absolute;
+	top: 55px;
+	right: -15px;
+	cursor: pointer;
+	z-index: 1;
+}
+
+.Logo-container {
+	display: flex;
+	align-items: center;
+	padding: 10px 14px;
+	margin-bottom: 35px;
+	white-space: nowrap;
+}
+
+.Logo-container img {
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
+}
+
+.MenuHidden {
+	width: 75px;
+	padding-right: 10px;
+}
+
+.MenuHidden  span {
+	display: none;
+}
+
+.HiddenLogo {
+	display: none;
+}
+
+.MenuBtnToggleRotate {
+	transform: rotate(180deg);
+}
+
+.MenuButton {
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	border-radius: 8px;
+	color: rgb(34, 34, 34);
+	text-decoration: none;
+	font-size: 14px;	
+	transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.MenuButton:hover {
+	background-color:rgb(54, 124, 236, 0.1);
+	transform: translateX(5px);
+}
+
+.MenuButtonActived {
+	pointer-events: none;
+	background-color: rgb(54, 124, 236);
+}
+
+.MenuButtonActived span {
+	color: rgb(255, 255, 255);
+}
+
+.MenuButton.MenuButtonActived img {
+	filter: invert(0);
+}
+
+.MenuButton img {
+	width: 24px;
+	height: 24px;
+	margin-right: 10px;
+	filter: invert(1);
+}
+
+.btn-icon-toggle-menu {
+	width: 35px;
+	height: 35px;
+	outline: none;
+	margin: 0;
+	border: 1px solid rgba(54, 124, 236,0.5);
+	border-radius: 50%;
+	box-shadow: 0 0 5px rgba(54, 124, 236,0.1);
+	background-color: rgb(250, 250, 255);
+	background-size: 20px 20px;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: all 100ms ease-in;
+}
+
+.icon-toggle-menu {
+	background-image: url('/SVG/menutoggle.svg');
+	background-size: 25px 25px;
+}
+
+
+
+@media ( min-width : 1180px) {
+	.Logo-header {
+		display: none;
+	}
+	#ButtonHeader {
+		display: none;
+	}
+	#NavBarHeader {
+		display: none;
+	}
+}
+
+@media ( max-width : 1380px) {
+	#ToggleMenuBtn {
+		display: none;
+	}
+}
+
+@media ( max-width : 1180px) {
+	#LogoContainer {
+		display: none;
+	}
+	.Logo-header {
+		display: block;
+	}
+	#ButtonHeader {
+		display: block;
+	}
+	
+	#NavBarHeader{
+		z-index: 1051;
+	}
+	
+	.Container {
+		flex-direction: column;
+		height: 100vh;          
+		min-height: unset;      
+	}
+
+	.Main-container {
+		margin-top: 30px;
+		flex-grow: 1;
+		overflow-y: auto;
+		height: calc(100vh - 30px); 
+	}
+	
+	.Menu-container {
+		display: none;
+	}
+	
+}

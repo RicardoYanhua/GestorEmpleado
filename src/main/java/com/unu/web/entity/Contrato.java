@@ -7,8 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,11 +17,11 @@ import jakarta.persistence.GenerationType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import jakarta.persistence.Column;
 
 @Entity
+@Table(name = "contrato")
 public class Contrato {
 
 	@Id
@@ -60,29 +60,33 @@ public class Contrato {
 	@Column(name = "contratoJornada", nullable = false)
 	private Jornada contratoJornada;
 
-	@NotNull(message = "El salario del empleado es obligatorio.")
-	@DecimalMin(value = "1200.00", inclusive = true, message = "El salario debe ser mayor o igual a 1200.00.")
-	@Digits(integer = 8, fraction = 2, message = "El salario debe tener hasta 8 dígitos enteros y 2 decimales.")
-	@Column(name = "contratoSalario", nullable = false, precision = 10, scale = 2)
-	private BigDecimal contratoSalario;
-
 	@NotNull(message = "La fecha de inicio del contrato es obligatoria.")
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	@Column(name = "contratoFechaInicio", nullable = false)
 	private LocalDate contratoFechaInicio;
 
-	@Future(message = "La fecha de finalización debe ser una fecha en el futuro.")
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	
-	@Column(name = "contratoFechaFin")
+	@Column(name = "contratoFechaFin", nullable = true)
 	private LocalDate contratoFechaFin;
+	
+	
+	@Transient
+	private BigDecimal contratoSalario;
+	
+	public BigDecimal getContratoSalario() {
+		return contratoSalario;
+	}
+	public void setContratoSalario(BigDecimal contratoSalario) {
+		this.contratoSalario = contratoSalario;
+	}
+	
 
 	public enum Estado {
 		P, V, C
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "contratoEstado", nullable = false)
+	@Column(name = "contratoEstado", nullable = true)
 	private Estado contratoEstado;
 
 	public String getEstado() {
@@ -134,7 +138,6 @@ public class Contrato {
 		this.contratoModalidad = null;
 		this.contratoDetalle = null;
 		this.contratoJornada = null;
-		this.contratoSalario = null;
 		this.contratoFechaInicio = null;
 		this.contratoFechaFin = null;
 		this.contratoEstado = null;
@@ -150,7 +153,6 @@ public class Contrato {
 		this.contratoModalidad = contratoModalidad;
 		this.contratoDetalle = contratoDetalle;
 		this.contratoJornada = contratoJornada;
-		this.contratoSalario = contratoSalario;
 		this.contratoFechaInicio = contratoFechaInicio;
 		this.contratoFechaFin = contratoFechaFin;
 		this.contratoEstado = contratoEstado;
@@ -204,14 +206,6 @@ public class Contrato {
 		this.contratoJornada = contratoJornada;
 	}
 
-	public BigDecimal getContratoSalario() {
-		return contratoSalario;
-	}
-
-	public void setContratoSalario(BigDecimal contratoSalario) {
-		this.contratoSalario = contratoSalario;
-	}
-
 	public LocalDate getContratoFechaInicio() {
 		return contratoFechaInicio;
 	}
@@ -244,16 +238,15 @@ public class Contrato {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return fecha.format(formatter);
 	}
-
 	@Override
 	public String toString() {
-		return String.format("________________________________________________-\n" + "Contrato {\n"
-				+ "  contratoId         : %s\n" + "  contratoEmpleadoId : %s\n" + "  contratoAreaId     : %s\n"
-				+ "  contratoModalidad  : %s\n" + "  contratoDetalle    : %s\n" + "  contratoJornada    : %s\n"
-				+ "  contratoSalario    : %.2f\n" + "  contratoFechaInicio: %s\n" + "  contratoFechaFin   : %s\n"
-				+ "  contratoEstado     : %s\n" + "} \n" + "________________________________________________-\n",
-				contratoId, contratoEmpleadoId, contratoAreaId, contratoModalidad, contratoDetalle, contratoJornada,
-				contratoSalario, contratoFechaInicio, contratoFechaFin, contratoEstado);
+		return "Contrato [contratoId=" + contratoId + ", contratoEmpleadoId=" + contratoEmpleadoId + ", contratoAreaId="
+				+ contratoAreaId + ", contratoModalidad=" + contratoModalidad + ", contratoDetalle=" + contratoDetalle
+				+ ", contratoJornada=" + contratoJornada + ", contratoFechaInicio=" + contratoFechaInicio
+				+ ", contratoFechaFin=" + contratoFechaFin + ", contratoSalario=" + contratoSalario
+				+ ", contratoEstado=" + contratoEstado + "]";
 	}
+	
+	
 
 }

@@ -48,6 +48,7 @@ public class EmpleadoController {
 	public String Main() {
 		return "redirect:/Empleado/Lista";
 	}
+
 	@GetMapping("")
 	public String Main2() {
 		return "redirect:/Empleado/Lista";
@@ -56,24 +57,23 @@ public class EmpleadoController {
 	@GetMapping("/FotoEmpleado/{nombre}")
 	@ResponseBody
 	public ResponseEntity<Resource> verFoto(@PathVariable String nombre) throws MalformedURLException {
-	    Path rutaArchivo = Paths.get("C:", "uploads", "FotoEmpleados").resolve(nombre).toAbsolutePath();
-	    Resource recurso = new UrlResource(rutaArchivo.toUri());
+		Path rutaArchivo = Paths.get("C:", "uploads", "FotoEmpleados").resolve(nombre).toAbsolutePath();
+		Resource recurso = new UrlResource(rutaArchivo.toUri());
 
-	    if (!recurso.exists() || !recurso.isReadable()) {
-	        throw new RuntimeException("No se puede cargar la imagen: " + nombre);
-	    }
-	    return ResponseEntity.ok()
-	            .contentType(MediaType.IMAGE_JPEG)
-	            .body(recurso);
+		if (!recurso.exists() || !recurso.isReadable()) {
+			throw new RuntimeException("No se puede cargar la imagen: " + nombre);
+		}
+		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(recurso);
 	}
-	
+
 	@GetMapping("/Lista")
 	public ModelAndView Lista(@RequestParam(value = "Busqueda", required = false, defaultValue = "") String busqueda,
-			@RequestParam(value = "Filtro", required = false, defaultValue = "Todo") String filtro, Pageable paginacion) {
+			@RequestParam(value = "Filtro", required = false, defaultValue = "Todo") String filtro,
+			Pageable paginacion) {
 		ModelAndView modelAndView = new ModelAndView("Empleado/ListaEmpleado");
 		Page Pagina = empleadoService.ListarEmpleado(paginacion, busqueda, filtro);
-		modelAndView.addObject("ListaEmpleados", Pagina.getContent());
-		modelAndView.addObject("page", Pagina);
+		modelAndView.addObject("Empleados", Pagina.getContent());
+		modelAndView.addObject("Pagina", Pagina);
 		modelAndView.addObject("Busqueda", busqueda);
 		modelAndView.addObject("Filtro", filtro);
 		return modelAndView;
@@ -83,47 +83,34 @@ public class EmpleadoController {
 	public ModelAndView Obtener(@PathVariable(name = "CodigoEmpleado") String codigoEmpleado) {
 		ModelAndView modelAndView = new ModelAndView("Empleado/EditarEmpleado");
 		Empleado emp = empleadoService.ObtenerEmpleado(codigoEmpleado);
-		modelAndView.addObject("EditarEmpleado", emp);
+		modelAndView.addObject("Empleado", emp);
 		modelAndView.addObject("Bancos", bancoService.ListarBanco());
 		return modelAndView;
 	}
 
 	@PostMapping("/Editar/{CodigoEmpleado}")
-	public ModelAndView Actualizar(
-			@RequestParam(name = "empFotoFile") MultipartFile file,
+	public ModelAndView Actualizar(@RequestParam(name = "empFotoFile") MultipartFile file,
 			@PathVariable(name = "CodigoEmpleado") String codigoEmpleado,
-			@Valid @ModelAttribute(name = "EditarEmpleado") Empleado empleado, BindingResult result) throws IOException {
+			@Valid @ModelAttribute(name = "Empleado") Empleado empleado, BindingResult result) throws IOException {
 
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("Bancos", bancoService.ListarBanco());
-		
 		
 		if (!file.isEmpty()) {
 			empleado.setEmpFotoByte(file.getBytes());
 			empleado.setEmpFoto(file.getOriginalFilename());
 		}
-		boolean FotoValidation = true;
-		
-		if (empleado.getEmpFoto() == null || empleado.getEmpFoto().equals("")) {
-			modelAndView.addObject("ErrorFoto", "Debe seleccionar una Foto para el empleado.");
-			FotoValidation = false;
-		}else {
-			modelAndView.addObject("FotoSuccess", true);
-		}
 		
 		if (result.hasErrors()) {
+
+			modelAndView.addObject("Bancos", bancoService.ListarBanco());
 			modelAndView.setViewName("Empleado/EditarEmpleado");
 			return modelAndView;
 		}
-		
-		Path directorioImagenes = Paths.get("C:", "uploads", "FotoEmpleados");
-		if (!Files.exists(directorioImagenes)) {
-		    Files.createDirectories(directorioImagenes);
+
+		if (!file.isEmpty()) {
+			GuardarFoto(empleado);
 		}
 		
-		Path rutaCompleta = directorioImagenes.resolve(empleado.getEmpFoto());
-		Files.write(rutaCompleta, empleado.getEmpFotoByte());
-
 		empleadoService.ActualizarEmpleado(empleado);
 		modelAndView.setViewName("redirect:/Empleado/Lista");
 		return modelAndView;
@@ -142,7 +129,7 @@ public class EmpleadoController {
 	@PostMapping("/Nuevo")
 	public ModelAndView Insertar(@RequestParam(name = "empFotoFile") MultipartFile file,
 			@Valid @ModelAttribute(name = "NuevoEmpleado") Empleado empleado, BindingResult result) throws IOException {
-		
+
 		ModelAndView modelAndView = new ModelAndView();
 		boolean DniValidation = true;
 		if (empleadoService.ValidarExistDni(empleado.getEmpDni())) {
@@ -155,11 +142,11 @@ public class EmpleadoController {
 			empleado.setEmpFoto(file.getOriginalFilename());
 		}
 		boolean FotoValidation = true;
-		
+
 		if (empleado.getEmpFoto() == null || empleado.getEmpFoto().equals("")) {
 			modelAndView.addObject("ErrorFoto", "Debe seleccionar una Foto para el empleado.");
 			FotoValidation = false;
-		}else {
+		} else {
 			modelAndView.addObject("FotoSuccess", true);
 		}
 		
@@ -168,22 +155,23 @@ public class EmpleadoController {
 			modelAndView.setViewName("Empleado/NuevoEmpleado");
 			return modelAndView;
 		}
-
-		Path directorioImagenes = Paths.get("C:", "uploads", "FotoEmpleados");
-		if (!Files.exists(directorioImagenes)) {
-		    Files.createDirectories(directorioImagenes);
-		}
 		
-		Path rutaCompleta = directorioImagenes.resolve(empleado.getEmpFoto());
-		Files.write(rutaCompleta, empleado.getEmpFotoByte());
-
+		GuardarFoto(empleado);
 		empleadoService.InsertarEmpleado(empleado);
-		
+
 		modelAndView.setViewName("redirect:/Empleado/Lista");
 		return modelAndView;
 	}
 	
-	
+	public void GuardarFoto(Empleado emp) throws IOException {
+		Path directorioImagenes = Paths.get("C:", "uploads", "FotoEmpleados");
+		if (!Files.exists(directorioImagenes)) {
+			Files.createDirectories(directorioImagenes);
+		}
+
+		Path rutaCompleta = directorioImagenes.resolve(emp.getEmpFoto());
+		Files.write(rutaCompleta, emp.getEmpFotoByte());
+	}
 
 	public String GenerarNuevoCodigoEmpleado() {
 		String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

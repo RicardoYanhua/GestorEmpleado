@@ -96,13 +96,9 @@
 					<div class="col-md-6">
 						<label for="ContratoSalario" class="form-label fw-bold">Salario</label>
 						<input type="text" class="form-control" id="ContratoSalario"
-							th:field="*{contratoSalario}"
+							th:field="*{contratoAreaId.areaSalarioBase}"
 							placeholder="Ingrese el salario del contrato" autocomplete="off" readonly="readonly">
-						<div th:if="${#fields.hasErrors('contratoSalario')}"
-							th:errors="*{contratoSalario}" class="text-danger fs-9"></div>
-						<div id="errorSalario" class="text-danger small"
-							style="display: none;">El salario debe ser igual o mayor al
-							salario base del área.</div>
+						
 					</div>
 
 					<!-- Fecha de Inicio -->
@@ -206,15 +202,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const fechaFinVer = document.getElementById('verFecha');
 
     function obtenerUltimoDiaDelMes(mes, anio) {
-        return new Date(anio, mes, 0).getDate(); // El día 0 del siguiente mes da el último día del actual
+        return new Date(anio, mes, 0).getDate();
     }
 
     function actualizarFechaFin() {
         const fechaInicio = fechaInicioInput.value.trim();
         const fechaFin = fechaFinInput.value.trim();
 
-        const regexInicio = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$/; // dd-MM-yyyy
-        const regexFin = /^(0[1-9]|1[0-2])-(\d{4})$/; // MM-yyyy
+        const regexInicio = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$/;
+        const regexFin = /^(0[1-9]|1[0-2])-(\d{4})$/;
 
         fechaFinHiddenInput.value = '';
 
@@ -233,11 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const fechaFinalValida = `${diaFinal}-${mesFinal}-${anioFin}`;
             fechaFinHiddenInput.value = fechaFinalValida;
             fechaFinVer.innerText = fechaFinalValida;
-
-            console.log("Fecha final válida:", fechaFinalValida);
-        } else {
-            console.warn("Formato inválido: inicio debe ser dd-MM-yyyy, fin debe ser MM-yyyy");
-        }
+        } 
     }
 
     fechaInicioInput.addEventListener('input', actualizarFechaFin);
@@ -248,45 +240,20 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
-    // Función que actualiza el salario según el área seleccionada
+   
     function updateSalario() {
         var selectArea = document.getElementById("area");
         var salarioInput = document.getElementById("ContratoSalario");
-
-        // Obtener el salario del área seleccionado
         var selectedOption = selectArea.options[selectArea.selectedIndex];
         var salario = selectedOption.getAttribute('data-salario');
-
-        // Establecer el salario en el input
-        salarioInput.value = salario;
-
-        // Ocultar el mensaje de error si el usuario cambia el área
-        document.getElementById("errorSalario").style.display = "none";
+        salarioInput.value = salario; 
     }
 
-    // Validación del salario antes de enviar el formulario
-    document.getElementById("editarContratoForm").addEventListener("submit", function(event) {
-        var salarioInput = document.getElementById("ContratoSalario");
-        var salarioIngresado = parseFloat(salarioInput.value);
-        var selectArea = document.getElementById("area");
-        var selectedOption = selectArea.options[selectArea.selectedIndex];
-        var salarioBase = parseFloat(selectedOption.getAttribute('data-salario'));
-
-        // Validar si el salario ingresado es mayor o igual al salario base del área
-        if (salarioIngresado < salarioBase) {
-            document.getElementById("errorSalario").style.display = "block";
-            event.preventDefault(); // Evitar el envío del formulario
-        }
-    });
-
-    // Función que muestra u oculta el campo de fecha de finalización
     function toggleFechaFinalizacion() {
         var modalidadSelect = document.getElementById("ContratoModalidad");
         var fechaFinalizacionDiv = document.getElementById("fechaFinalizacionDiv");
-
         const fechaFinHiddenInput = document.getElementById('ContratoFechaFinHidden');
         var modalidadSeleccionada = modalidadSelect.value;
-
         if (modalidadSeleccionada === "IN") {
             fechaFinalizacionDiv.style.display = "none";
             document.getElementById("ContratoFechaFin").value = "";
@@ -295,9 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
             fechaFinalizacionDiv.style.display = "block";
         }
     }
-
-    // Llamar a la función para ajustar visibilidad al cargar la página
     window.onload = toggleFechaFinalizacion;
+    
 </script>
 
 <script>
@@ -306,9 +272,13 @@ document.addEventListener('DOMContentLoaded', function () {
         minDate: "today",
         locale: "es"
     });
-
+	
+    const hoy = new Date();
+    const siguienteMes = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1);
+    
     flatpickr("#ContratoFechaFin", {
         dateFormat: "d-m-Y",
+        minDate: siguienteMes,
         plugins: [
           new monthSelectPlugin({
             shorthand: true,
@@ -318,10 +288,9 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     });
 
-    // Asegúrate de que esta función esté definida en otro script
-    if (typeof setActiveByIndex === "function") {
+   
         setActiveByIndex(0);
-    }
+    
 </script>
 	
 </body>

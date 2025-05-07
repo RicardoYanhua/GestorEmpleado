@@ -46,11 +46,6 @@ public class ContratoServiceImpl implements ContratoService {
 	}
 
 	@Override
-	public void ActualizarContrato(Contrato contrato) {
-		contratoRepository.save(contrato);
-	}
-
-	@Override
 	public Contrato ObtenerContrato(int idContrato) {
 		return contratoRepository.findById(idContrato)
 				.orElseThrow(() -> new IllegalArgumentException("No se encontro el Contrato con ID : " + idContrato));
@@ -61,67 +56,78 @@ public class ContratoServiceImpl implements ContratoService {
 		return contratoRepository.TieneContrato(emp);
 	}
 
-	@Transactional
-	public void ActualizarEstadosContratos() {
-	    List<Contrato> contratos = contratoRepository.ObtenerContratosFechas();
-	    LocalDate fechaActual = LocalDate.now();
-
-	    for (Contrato contrato : contratos) {
-	        LocalDate fechaInicio = contrato.getContratoFechaInicio();
-	        LocalDate fechaFin = contrato.getContratoFechaFin();
-
-	        if (fechaInicio == null) {
-	            continue; // No se puede evaluar el estado sin fecha de inicio
-	        }
-
-	        if (fechaActual.isBefore(fechaInicio)) {
-	            contrato.setContratoEstado(Estado.P); // Pendiente
-	        } else if (fechaFin == null || fechaActual.isEqual(fechaInicio) || 
-	                   (fechaActual.isAfter(fechaInicio) && fechaActual.isBefore(fechaFin))) {
-	            contrato.setContratoEstado(Estado.V); // Vigente
-	        } else if (fechaActual.isAfter(fechaFin)) {
-	            contrato.setContratoEstado(Estado.C); // Caducado
-	        }
-	    }
-
-	    contratoRepository.saveAll(contratos);
+	@Override
+	public void ActualizarContrato(Contrato contrato) {
+		contratoRepository.save(contrato);
 	}
 
-
-	public Estado DeterminarEstadoDelContrato(Contrato contrato) {
-
-		if (contrato.getContratoFechaInicio() == null) {
-			return null;
-		}
-
-		if (contrato.getContratoFechaFin() != null && contrato.getContratoFechaFin().isBefore(contrato.getContratoFechaInicio())) {
-			return null;
-		}
-		if (contrato.getContratoFechaFin() != null && contrato.getContratoFechaFin().isEqual(contrato.getContratoFechaInicio())) {
-			return null;
-		}
-
+	@Override
+	public void ActualizarEstadosContratos() {
+		List<Contrato> contratos = contratoRepository.findAll();
 		LocalDate fechaActual = LocalDate.now();
 
-		if (fechaActual.isBefore(contrato.getContratoFechaInicio())) {
-			return Estado.P;
-		} else if (fechaActual.isEqual(contrato.getContratoFechaInicio())
-				|| (fechaActual.isAfter(contrato.getContratoFechaInicio()))) {
-			return Estado.V;
-		} else if (fechaActual.isEqual(contrato.getContratoFechaInicio())
-				|| (fechaActual.isAfter(contrato.getContratoFechaInicio())
-						&& fechaActual.isBefore(contrato.getContratoFechaFin()))) {
-			return Estado.V;
-		} else if (fechaActual.isAfter(contrato.getContratoFechaFin())) {
-			return Estado.C;
+		for (Contrato contrato : contratos) {
+
+			Estado estado = DeterminarEstadoDelContrato(contrato);
+			if (estado == null) {
+				System.err.println("Estado nulo para contrato ID: " + contrato.getContratoId());
+				continue;
+			}
+
+			try {
+				contrato.setContratoEstado(estado);
+				ActualizarContrato(contrato);
+
+			} catch (Exception e) {
+			    Throwable t = e;
+			    while (t.getCause() != null) {
+			        t = t.getCause();
+			    }
+			    System.err.println("Error raíz al guardar contrato ID " + contrato.getContratoId() + ": " + t.getMessage());
+			    t.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public Estado DeterminarEstadoDelContrato(Contrato contrato) {
+		LocalDate fechaInicio = contrato.getContratoFechaInicio();
+		LocalDate fechaFin = contrato.getContratoFechaFin();
+		LocalDate fechaActual = LocalDate.now();
+
+		if (fechaInicio == null) {
+			return null;
 		}
 
-		return null;
+		// Validación lógica de fechas incorrectas
+		if (fechaFin != null && (fechaFin.isBefore(fechaInicio) || fechaFin.isEqual(fechaInicio))) {
+			return null;
+		}
+
+		if (fechaActual.isBefore(fechaInicio)) {
+			return Estado.P; // Pendiente
+		}
+
+		if ((fechaFin == null && fechaActual.isAfter(fechaInicio))
+				|| (fechaFin == null && fechaActual.isEqual(fechaInicio))) {
+			return Estado.V; // Vigente sin fecha de fin
+		}
+
+		if ((fechaActual.isEqual(fechaInicio) || fechaActual.isAfter(fechaInicio))
+				&& (fechaActual.isBefore(fechaFin) || fechaActual.isEqual(fechaFin))) {
+			return Estado.V; // Vigente entre fechas
+		}
+
+		if (fechaFin != null && fechaActual.isAfter(fechaFin)) {
+			return Estado.C; // Caducado
+		}
+
+		return null; // Estado indeterminado
 	}
 
 	@Override
 	public Contrato ObtenerContrato(Empleado emp) {
-		if(TieneContrato(emp)) {
+		if (TieneContrato(emp)) {
 			return contratoRepository.ObtenerContrato(emp);
 		}
 		return null;
@@ -131,5 +137,7 @@ public class ContratoServiceImpl implements ContratoService {
 	public List<Contrato> ListaContratoEmpleadoCaducado(Empleado empleado) {
 		return contratoRepository.ListarContratosEmpleadoCaducados(empleado);
 	}
+
+	
 
 }

@@ -32,23 +32,28 @@
 
 		<div class="Main-container container-fluid py-4">
 
-    <form th:action="@{/Area/Editar}" th:object="${EditarArea}" method="post" class="container mt-4">
+    <form 
+   
+    th:action="@{/Area/Editar/{CodigoArea}(CodigoArea=${Area.areaId})}"
+    
+    th:object="${Area}" method="post" class="container mt-4">
 
     <h6 class="mb-4 lead text-white bg-primary shadow py-3 ps-3 rounded-3 fw-bold text-center">
-        Nueva Área
+        Editar Área
     </h6>
+    <input type="hidden" th:field="*{areaId}" />
     
     <div class="mb-3">
         <label for="AreaNombre" class="form-label fw-bold">Nombre del Área de la Empresa</label>
         <input type="text" class="form-control" id="AreaNombre"
             th:field="*{areaNombre}" placeholder="Ingrese el nombre del área de la empresa."
-            autocomplete="off" readonly="readonly">
+            autocomplete="off">
         <div th:if="${#fields.hasErrors('areaNombre')}" th:errors="*{areaNombre}" class="text-danger mt-1"></div>
     </div>
     
     <div class="mb-3">
         <label for="AreaSalarioBase" class="form-label fw-bold">Salario Base</label>
-        <input type="text" class="form-control" id="AreaSalarioBase"
+        <input type="text" class="form-control FormatoDouble" id="AreaSalarioBase"
             th:field="*{areaSalarioBase}" placeholder="Ingrese el salario base (mínimo S/1200)."
             autocomplete="off">
         <div th:if="${#fields.hasErrors('areaSalarioBase')}" th:errors="*{areaSalarioBase}" class="text-danger mt-1"></div>
@@ -56,7 +61,7 @@
 
     <div class="d-flex justify-content-end gap-2">
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a class="btn btn-outline-secondary" th:href="@{/Empleado/Lista}">Cancelar</a>
+        <a class="btn btn-outline-secondary" th:href="@{/Area/Lista}">Cancelar</a>
     </div>
 
 </form>
@@ -64,7 +69,7 @@
     
     </div>
     </div>
-
+<script src="/Scripts/Formato.js"></script>
 <script type="text/javascript">
 	
 	setActiveByIndex(2);

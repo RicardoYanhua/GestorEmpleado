@@ -1,6 +1,13 @@
 package com.unu.web.controller;
 
+import java.text.DateFormatSymbols;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,9 +45,42 @@ public class ContratoController {
 	@Qualifier("areaService")
 	private AreaService areaService;
 
-	@GetMapping("/")
-	public String Main() {
-		return "redirect:/Contrato/Lista";
+	public boolean ActivarBoleta(LocalDate fechaInicio, LocalDate fechaFin) {
+
+		LocalDate fechaActual = LocalDate.now();
+
+		if (fechaActual.isBefore(fechaInicio) || fechaActual.isAfter(fechaFin)) {
+			return false;
+		}
+
+		LocalDate iterador = fechaInicio.plusMonths(1);
+		while (!iterador.isAfter(fechaFin)) {
+			if (fechaActual.isEqual(iterador)) {
+				return true;
+			}
+			iterador = iterador.plusMonths(1);
+		}
+
+		return false;
+	}
+
+	public String MensajeBoleta(LocalDate fechaInicio, LocalDate fechaFin) {
+
+		LocalDate fechaActual = LocalDate.now();
+
+		if (ActivarBoleta(fechaInicio, fechaFin)) {
+			return "Realizar pago.";
+		} else {
+			LocalDate siguientePago = fechaInicio.withDayOfMonth(5);
+
+			if (siguientePago.isBefore(fechaActual)) {
+				siguientePago = siguientePago.plusMonths(1);
+			}
+
+			long diasFaltantes = ChronoUnit.DAYS.between(fechaActual, siguientePago);
+
+			return "Faltan " + (diasFaltantes + 1) + " días.";
+		}
 	}
 
 	@GetMapping("/Lista")
@@ -48,8 +88,18 @@ public class ContratoController {
 		ModelAndView modelAndView = new ModelAndView("Contrato/ListaContrato");
 		Empleado emp = empleadoService.ObtenerEmpleado(empleado);
 		List<Contrato> listaContratos = contratoService.ListaContratoEmpleadoCaducado(emp);
-		Contrato cont = contratoService.ObtenerContrato(emp);
 		
+		Contrato cont = contratoService.ObtenerContrato(emp);
+
+		if(cont!=null) {
+			LocalDate fechaInicio = cont.getContratoFechaInicio();
+			LocalDate fechaFin = cont.getContratoFechaFin();
+
+			modelAndView.addObject("Boleta", ActivarBoleta(fechaInicio, fechaFin));
+			modelAndView.addObject("MensajeBoleta", MensajeBoleta(fechaInicio, fechaFin));
+		}
+		
+
 		modelAndView.addObject("ListaContratos", listaContratos);
 		modelAndView.addObject("CodigoEmpleado", empleado);
 		modelAndView.addObject("Empleado", emp);
@@ -65,7 +115,6 @@ public class ContratoController {
 		Contrato nuevoContrato = new Contrato();
 		Empleado emp = empleadoService.ObtenerEmpleado(empleado);
 		nuevoContrato.setContratoEmpleadoId(emp);
-
 		modelAndView.addObject("NuevoContrato", nuevoContrato);
 		modelAndView.addObject("Areas", areaService.ListarArea());
 		return modelAndView;
@@ -75,17 +124,15 @@ public class ContratoController {
 	public ModelAndView Insertar(@Valid @ModelAttribute(name = "NuevoContrato") Contrato contrato,
 			BindingResult result) {
 		ModelAndView modelAndView = new ModelAndView();
-		
+
 		Estado estadoContrato = contratoService.DeterminarEstadoDelContrato(contrato);
 		contrato.setContratoEstado(estadoContrato);
-		
-		
-		
+
 		if (result.hasErrors()) {
 			if (estadoContrato == null) {
 				modelAndView.addObject("ErrorFechas", "El orden de las fechas seleccionadas no es válido.");
 			}
-			
+
 			modelAndView.addObject("Areas", areaService.ListarArea());
 			modelAndView.setViewName("Contrato/NuevoContrato");
 			return modelAndView;
@@ -95,7 +142,7 @@ public class ContratoController {
 				"redirect:/Contrato/Lista?CodigoEmpleado=" + contrato.getContratoEmpleadoId().getEmpCodigo());
 		return modelAndView;
 	}
-	
+
 	@GetMapping("/Editar/{CodigoContrato}")
 	public ModelAndView Obtener(@PathVariable(name = "CodigoContrato") int codigoContrato) {
 		ModelAndView modelAndView = new ModelAndView("Contrato/EditarContrato");
@@ -105,10 +152,8 @@ public class ContratoController {
 		return modelAndView;
 	}
 
-	
 	@PostMapping("/Editar/{CodigoContrato}")
-	public ModelAndView Editar(
-			@PathVariable(name = "CodigoContrato") int codigoContrato,
+	public ModelAndView Editar(@PathVariable(name = "CodigoContrato") int codigoContrato,
 			@Valid @ModelAttribute(name = "EditarContrato") Contrato contrato, BindingResult result) {
 
 		ModelAndView modelAndView = new ModelAndView();
@@ -119,15 +164,15 @@ public class ContratoController {
 			if (estadoContrato == null) {
 				modelAndView.addObject("ErrorFechas", "El orden de las fechas seleccionadas no es válido.");
 			}
-			
+
 			modelAndView.setViewName("Contrato/EditarContrato");
 			return modelAndView;
 		}
 		contrato.setContratoId(codigoContrato);
 		contratoService.ActualizarContrato(contrato);
-		modelAndView.setViewName("redirect:/Contrato/Lista?CodigoEmpleado=" + contrato.getContratoEmpleadoId().getEmpCodigo());
+		modelAndView.setViewName(
+				"redirect:/Contrato/Lista?CodigoEmpleado=" + contrato.getContratoEmpleadoId().getEmpCodigo());
 		return modelAndView;
 	}
-	
 
 }

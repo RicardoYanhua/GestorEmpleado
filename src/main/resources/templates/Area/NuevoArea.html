@@ -48,7 +48,7 @@
     
     <div class="mb-3">
         <label for="AreaSalarioBase" class="form-label fw-bold">Salario Base</label>
-        <input type="text" class="form-control" id="AreaSalarioBase"
+        <input type="text" class="form-control FormatoDouble" id="AreaSalarioBase"
             th:field="*{areaSalarioBase}" placeholder="Ingrese el salario base (mínimo S/1200)."
             autocomplete="off">
         <div th:if="${#fields.hasErrors('areaSalarioBase')}" th:errors="*{areaSalarioBase}" class="text-danger mt-1"></div>
@@ -56,7 +56,7 @@
 
     <div class="d-flex justify-content-end gap-2">
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a class="btn btn-outline-secondary" th:href="@{/Empleado/Lista}">Cancelar</a>
+        <a class="btn btn-outline-secondary" th:href="@{/Area/Lista}">Cancelar</a>
     </div>
 
 </form>
@@ -65,10 +65,10 @@
     </div>
     </div>
 
-<script type="text/javascript">
-	
+<script src="/Scripts/Formato.js"></script>
+<script>
 	setActiveByIndex(2);
-	</script>
+</script>
 </body>
 
 </html>

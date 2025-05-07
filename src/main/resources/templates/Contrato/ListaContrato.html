@@ -2,25 +2,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Lista Contrato</title>
+<title>Lista contrato</title>
 
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet"
 	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 	crossorigin="anonymous">
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-	crossorigin="anonymous"></script>
 
-<!-- Enlaces a hojas de estilo locales -->
+
 <link href="/Styles/MenuStyle.css" rel="stylesheet">
 <link href="/Styles/Componente.css" rel="stylesheet">
+<link href="/Styles/LayoutCards.css" rel="stylesheet">
 
-
-
-<script src="/Scripts/MenuScript.js"></script>
 
 </head>
 <body>
@@ -38,94 +32,94 @@
 
 
 
-
-
-			<style>
-.img-container {
-	width: 100%;
-	height: 100%;
-	max-width: 150px;
-	max-height: 150px;
-	overflow: hidden;
-}
-
-.img-container img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-</style>
-
 			<div th:unless="${BotonAgregar}"
-				class="mb-3 p-4 rounded-3 bg-dark text-white shadow-sm"
-				style="background: linear-gradient(135deg, #367cec, #17c694);">
+				class="mb-3 pt-5 pb-4 px-5 rounded-3 shadow-sm border border-primary border-1"
+				style="background: linear-gradient(135deg, rgb(255, 255, 255), rgb(230, 230, 255));">
+
+
+
+				<h2 class="h4 m-0 text-center text-md-start mb-3 mx-3"
+					th:text="${Empleado.getNombreApellidos()}">Información del
+					Empleado</h2>
+
+
+				<!-- Foto y Contenido -->
 				<div class="row align-items-center">
-					<!-- Imagen -->
-					<div class="col-12 col-md-4 d-flex justify-content-center">
-						<div class="img-container rounded-3 overflow-hidden">
+					<!-- Foto -->
+					<div
+						class="col-12 col-md-4 d-flex justify-content-center Img-Container mb-3">
+						<div class="Size-Image-2 rounded-3 overflow-hidden">
 							<img
 								th:if="${Empleado.empFoto != null and Empleado.empFoto != ''}"
 								th:src="@{/Empleado/FotoEmpleado/{nombre}(nombre=${Empleado.empFoto})}"
-								alt="Foto empleado" class="img-fluid"> <img
+								alt="Foto empleado" class="w-100 h-100 object-fit-cover">
+							<img
 								th:if="${Empleado.empFoto == null or Empleado.empFoto == ''}"
-								src="/SVG/foto.svg" alt="Foto empleado" class="img-fluid">
+								src="/SVG/foto.svg" alt="Foto empleado"
+								class="w-100 h-100 object-fit-cover">
 						</div>
 					</div>
 
 					<!-- Contenido -->
 					<div class="col-12 col-md-8 mt-2 mt-md-0">
-						<p class="contractHeading text-white fw-bold fs-4">Sin
-							contrato</p>
-						<p class="contractDescription text-white">Actualmente, el
-							empleado no tiene un contrato activo. Si desea iniciar un nuevo
-							contrato, puede proceder a configurar uno.</p>
+						<p class="contractHeading fw-bold fs-4">Sin contrato</p>
+						<p class="contractDescription">Actualmente, el empleado no
+							tiene un contrato activo. Si desea iniciar un nuevo contrato,
+							puede proceder a configurar uno.</p>
 						<div class="d-flex justify-content-end gap-3 mt-3">
-							<a
+							<a class="btn btn-outline-secondary rounded-pill px-5 py-2"
+								th:href="@{/Empleado/Lista}">Volver</a> <a
 								class="btn btn-warning rounded-pill px-5 py-2 fw-bold text-dark"
-								th:href="@{/Contrato/Nuevo?Codigo={Codigo}(Codigo=${CodigoEmpleado})}">
-								Iniciar Contrato </a>
+								th:href="@{/Contrato/Nuevo?Codigo={Codigo}(Codigo=${CodigoEmpleado})}">Contratar</a>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<h4 th:if="${Contrato != null}" class="fw-bold mb-3">Detalles de
-				Contrato</h4>
-			<div th:if="${Contrato != null}" class=" mb-4 rounded-4 shadow"
-				style="background: linear-gradient(135deg, #e0f7fa, #ebf2fd);">
 
 
+			<div th:if="${Contrato != null}"
+				class="mb-3 pt-5 pb-4 px-5 rounded-3 shadow-sm border border-primary border-1"
+				style="background: linear-gradient(135deg, rgb(255, 255, 255), rgb(230, 230, 255));">
 
-				<div class="row g-0 position-relative z-1">
+				<!-- Título -->
+				<h2 class="h4 text-center fw-bold text-md-start mx-3"
+					th:text="${Empleado.getNombreApellidos()}">Información del
+					Empleado</h2>
+
+				<div class="row align-items-center">
 					<!-- Imagen -->
 					<div
-						class="col-md-4 d-flex align-items-center justify-content-center p-4">
-						<div class="rounded-4 overflow-hidden"
-							style="width: 200px; height: 200px;">
+						class="col-md-4 d-flex align-items-center justify-content-center Img-Container p-4">
+						<div class="Size-Image-3 rounded-3 overflow-hidden shadow-sm">
 							<img
 								th:if="${Empleado.empFoto != null and Empleado.empFoto != ''}"
 								th:src="@{/Empleado/FotoEmpleado/{nombre}(nombre=${Empleado.empFoto})}"
-								alt="Foto empleado" class="w-100 h-100"
-								style="object-fit: cover;"> <img
+								alt="Foto empleado" class="w-100 h-100 object-fit-cover">
+							<img
 								th:if="${Empleado.empFoto == null or Empleado.empFoto == ''}"
-								src="/SVG/foto.svg" alt="Foto empleado" class="w-100 h-100"
-								style="object-fit: cover;">
+								src="/SVG/foto.svg" alt="Foto empleado"
+								class="w-100 h-100 object-fit-cover">
 						</div>
 					</div>
 
 					<!-- Contenido -->
 					<div class="col-md-8 p-4 text-dark">
+						<!-- Información del contrato -->
+						<div class="row row-cols-1 row-cols-md-2 small">
 
+							<strong th:if="${Contrato != null}" class="fs-5 mb-3">Detalles
+								de Contrato</strong>
 
-						<div class="row row-cols-2 gy-0 small">
-							<div>
-								<strong>ID</strong>
-							</div>
 							<div th:text="${Contrato.contratoId}"></div>
 							<div>
 								<strong>Área</strong>
 							</div>
 							<div th:text="${Contrato.contratoAreaId.areaNombre}"></div>
+							<div>
+								<strong>Salario</strong>
+							</div>
+							<div th:text="${Contrato.contratoAreaId.areaSalarioBase}"></div>
 							<div>
 								<strong>Detalle</strong>
 							</div>
@@ -138,10 +132,7 @@
 								<strong>Jornada</strong>
 							</div>
 							<div th:text="${Contrato.getJornada()}"></div>
-							<div>
-								<strong>Salario</strong>
-							</div>
-							<div th:text="${Contrato.contratoSalario}"></div>
+
 							<div>
 								<strong>F. Inicio</strong>
 							</div>
@@ -156,25 +147,38 @@
 							<div th:text="${Contrato.getEstado()}"></div>
 						</div>
 
-						<!-- Botón -->
-						<div class="text-end mt-4">
+						<!-- Botones -->
+						<div class="text-end mt-4 d-flex flex-column flex-md-row gap-2">
+
+							<div
+								class="d-flex justify-content-center align-items-center w-100 w-md-auto gap-2">
+								<a th:if="${Boleta == true}"
+									th:href="@{/GenerarBoleta?CodigoContrato={CodigoContrato}&content={content}(CodigoContrato=${Contrato.contratoId}, content=${variableDeContenido})}"
+									class="btn btn-success rounded-pill py-2"> Boleta PDF </a> <a
+									th:if="${Boleta != true}"
+									th:href="@{/GenerarBoleta?CodigoContrato={CodigoContrato}&content={content}(CodigoContrato=${Contrato.contratoId}, content=${variableDeContenido})}"
+									class="btn btn-success rounded-pill py-2 w-100 w-md-auto disabled"
+									role="button" aria-disabled="true"> Boleta PDF </a>
 
 
-							<a th:href="@{/GenerarBoleta(content=${variableDeContenido})}" class="btn btn-primary">
-    Descargar Boleta PDF
-</a>
-							
-							
-							
+								<div th:if="${MensajeBoleta != null and MensajeBoleta != ''}">
+									<span
+										class="d-inline-block text-nowrap text-primary text-center fs-9 "
+										th:text="${MensajeBoleta}"> </span>
+								</div>
+
+
+
+							</div>
+
+
+
 							<a
-								class="btn btn-primary rounded-pill d-inline-flex align-items-center gap-2 px-4 py-2 fw-semibold shadow"
+								class="btn btn-warning h-auto rounded-pill d-inline-flex align-items-center justify-content-center gap-2 py-2 w-100 w-md-auto"
 								th:href="@{/Contrato/Editar/{CodigoContrato}(CodigoContrato=${Contrato.contratoId})}">
-								Editar Contrato
-							</a>
-							
-							
-
-
+								Editar </a> <a
+								class="btn btn-secondary rounded-pill py-2 w-100 w-md-auto"
+								th:href="@{/Empleado/Lista}"> Volver </a>
 						</div>
 					</div>
 				</div>
@@ -183,103 +187,80 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-			<div class="d-flex mb-3">
-				<a
-					class="btn-icon-text fs-12 fw-bold btn btn-secondary  rounded-pill px-5 py-2 rounded-3"
-					th:href="@{/Empleado/Lista}"> Volver a la lista de empleados </a>
-
-
-			</div>
-
-
-
-			<style>
-.Grid-Container {
-	height: 100%;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-	align-items: start;
-	gap: 15px;
-}
-</style>
-
-
-
-			<!-- Botón "Nuevo Empleado" alineado a la derecha -->
 			<div class="d-flex mt-4">
-				<strong class="lead fs-4 fw-bold">Historial de contratos
-					finalizados</strong>
+				<strong class=" fs-5 mb-3">Historial de contratos</strong>
 			</div>
 
 
-			<!-- Mostrar mensaje si no hay contratos -->
+
 			<div
 				th:if="${ListaContratos == null or #lists.isEmpty(ListaContratos)}"
-				class="alert alert-danger" role="alert">Este empleado no tiene
-				ningún contrato finalizado.</div>
+				class="bg-white shadow p-3 rounded-3 mt-3 border border-2 border-danger">Este
+				empleado no tiene ningún contrato finalizado.</div>
 
-			<!-- Mostrar la grilla solo si hay contratos -->
 			<div
 				th:if="${ListaContratos != null and !#lists.isEmpty(ListaContratos)}"
-				class="Grid-Container">
+				class="Grid-Container" >
 
 
-				<div class="container mt-4">
-					<div class="row" th:each="Contrato : ${ListaContratos}">
-						<div class="col-md-6 col-lg-4 mb-4">
-							<div class="card shadow-sm h-100">
-								<div class="card-body">
-									<h5 class="card-title">
-										ID: <span th:text="${Contrato.contratoId}"></span>
-									</h5>
-									<ul class="list-unstyled">
-										<li><strong>Área:</strong> <span
-											th:text="${Contrato.contratoAreaId.areaNombre}"></span></li>
-										<li><strong>Detalle:</strong> <span
-											th:text="${Contrato.contratoDetalle}"></span></li>
-										<li><strong>Modalidad:</strong> <span
-											th:text="${Contrato.getModalidad()}"></span></li>
-										<li><strong>Jornada:</strong> <span
-											th:text="${Contrato.getJornada()}"></span></li>
-										<li><strong>Salario:</strong> <span
-											th:text="${Contrato.contratoSalario}"></span></li>
-										<li><strong>F. Inicio:</strong> <span
-											th:text="${Contrato.contratoFechaInicio}"></span></li>
-										<li><strong>F. Fin:</strong> <span
-											th:text="${Contrato.getFechaFin()}"></span></li>
-										<li><strong>Estado:</strong> <span
-											th:text="${Contrato.getEstado()}"></span></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
 
+
+				<div class="Card w-100 mb-4" th:each="Contrato : ${ListaContratos}">
+	<div class="card h-100 border-0 shadow rounded-4 custom-card-bg">
+		
+		<!-- Header del Card -->
+		<div class="card-header bg-primary text-white rounded-top-4 py-3 px-4">
+			<h5 class="mb-0 fw-semibold">
+				Contrato #<span th:text="${Contrato.contratoId}"></span>
+			</h5>
+		</div>
+
+		<!-- Cuerpo en horizontal -->
+		<div class="card-body d-flex flex-wrap gap-4 px-4 py-3">
+			<div class="d-flex align-items-center me-4">
+				<strong class="me-2 text-secondary">Área:</strong>
+				<span th:text="${Contrato.contratoAreaId.areaNombre}"></span>
+			</div>
+			<div class="d-flex align-items-center me-4">
+				<strong class="me-2 text-secondary">Modalidad:</strong>
+				<span th:text="${Contrato.getModalidad()}"></span>
+			</div>
+			<div class="d-flex align-items-center me-4">
+				<strong class="me-2 text-secondary">Jornada:</strong>
+				<span th:text="${Contrato.getJornada()}"></span>
+			</div>
+			<div class="d-flex align-items-center me-4">
+				<strong class="me-2 text-secondary">F. Inicio:</strong>
+				<span th:text="${Contrato.contratoFechaInicio}"></span>
+			</div>
+			<div class="d-flex align-items-center">
+				<strong class="me-2 text-secondary">F. Fin:</strong>
+				<span th:text="${Contrato.getFechaFin()}"></span>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 
 			</div>
-
-
-
-
-
 		</div>
+
+
+
+
+
+
+
+	</div>
 	</div>
 
-	<script type="text/javascript">
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+	<script src="/Scripts/MenuScript.js"></script>
+	<script>
 		setActiveByIndex(0);
 	</script>
 

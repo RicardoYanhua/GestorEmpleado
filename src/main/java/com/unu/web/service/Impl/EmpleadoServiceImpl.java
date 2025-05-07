@@ -29,16 +29,16 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	        case "Codigo":
 	            lista = empleadoRepository.ListarPorCodigo(PageRequest.of(paginacion.getPageNumber(), tamañoDePagina), busqueda);
 	            break;
-	        case "Dni":
+	        case "DNI":
 	            lista = empleadoRepository.listarPorDni(PageRequest.of(paginacion.getPageNumber(), tamañoDePagina), busqueda);
 	            break;
 	        case "Nombres":
 	            lista = empleadoRepository.listarPorNombres(PageRequest.of(paginacion.getPageNumber(), tamañoDePagina), busqueda);
 	            break;
-	        case "Apellido Paterno":
+	        case "A.Paterno":
 	            lista = empleadoRepository.listarPorApellidoPaterno(PageRequest.of(paginacion.getPageNumber(), tamañoDePagina), busqueda);
 	            break;
-	        case "Apellido Materno":
+	        case "A.Materno":
 	            lista = empleadoRepository.listarPorApellidoMaterno(PageRequest.of(paginacion.getPageNumber(), tamañoDePagina), busqueda);
 	            break;
 	        default:

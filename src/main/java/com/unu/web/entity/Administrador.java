@@ -36,28 +36,21 @@ public class Administrador implements UserDetails {
 	@Column(name = "admNombreCompleto", length = 100)
 	private String admNombreCompleto;
 
-	@NotBlank(message = "El correo electronico no puede estar vacío")
-	@Email(message = "Debe ingresar un correo electrónico válido")
-	@Size(max = 100, message = "El correo electrónico no debe exceder 100 caracteres")
-	@Column(name = "admCorreo", length = 100)
-	private String admCorreo;
+	
 
 	public Administrador() {
 		this.admCodigo = 0;
 		this.admNombreUsuario = "";
 		this.admContrasenia = "";
 		this.admNombreCompleto = "";
-		this.admCorreo = "";
 	}
 
-	public Administrador(Integer admCodigo, String admNombreUsuario, String admContrasenia, String admNombreCompleto,
-			String admCorreo, Boolean admActivo) {
+	public Administrador(Integer admCodigo, String admNombreUsuario, String admContrasenia, String admNombreCompleto, Boolean admActivo) {
 		super();
 		this.admCodigo = admCodigo;
 		this.admNombreUsuario = admNombreUsuario;
 		this.admContrasenia = admContrasenia;
 		this.admNombreCompleto = admNombreCompleto;
-		this.admCorreo = admCorreo;
 	}
 
 	public Integer getAdmCodigo() {
@@ -92,14 +85,7 @@ public class Administrador implements UserDetails {
 		this.admNombreCompleto = admNombreCompleto;
 	}
 
-	public String getAdmCorreo() {
-		return admCorreo;
-	}
-
-	public void setAdmCorreo(String admCorreo) {
-		this.admCorreo = admCorreo;
-	}
-
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"));

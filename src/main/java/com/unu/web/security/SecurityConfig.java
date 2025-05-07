@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import com.unu.web.service.AdministradorService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import jakarta.servlet.ServletException;
@@ -31,18 +30,18 @@ public class SecurityConfig {
 	private AdministradorService administradorService;
 
 	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
+	public BCryptPasswordEncoder CodificadorDeContraseñas() {
 		return new BCryptPasswordEncoder();
 	}
 
-	private final CustomAccessDeniedHandler customAccessDeniedHandler;
+	private final Redireccionamiento_AccesoDenegado redireccionamiento_AccesoDenegado;
 
-	public SecurityConfig(CustomAccessDeniedHandler customAccessDeniedHandler) {
-		this.customAccessDeniedHandler = customAccessDeniedHandler;
+	public SecurityConfig(Redireccionamiento_AccesoDenegado redireccionamiento_AccesoDenegado) {
+		this.redireccionamiento_AccesoDenegado = redireccionamiento_AccesoDenegado;
 	}
 
 	@Bean
-	public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+	public AuthenticationSuccessHandler Redireccionamiento_AutentificacionExitoso() {
 		return new AuthenticationSuccessHandler() {
 			@Override
 			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -53,32 +52,61 @@ public class SecurityConfig {
 	}
 
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(administradorService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(administradorService).passwordEncoder(CodificadorDeContraseñas());
 	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.csrf().disable().authorizeHttpRequests(auth -> auth
-				// Rutas públicas
-				
-				.requestMatchers("/Login").permitAll().requestMatchers(HttpMethod.GET, "/Register").permitAll()
+		return http
+			// Deshabilita CSRF para evitar problemas en pruebas (activar en producción si es necesario)
+			.csrf().disable()
+
+			// Configuración de autorización por rutas
+			.authorizeHttpRequests(auth -> auth
+
+				// ==== Rutas públicas ====
+				.requestMatchers("/Login").permitAll()
+				.requestMatchers(HttpMethod.GET, "/Register").permitAll()
 				.requestMatchers(HttpMethod.POST, "/Register").permitAll()
 				.requestMatchers("/Styles/**", "/Scripts/**", "/SVG/**").permitAll()
-				.requestMatchers("/Empleado/**").hasAnyRole("ADMINISTRADOR").requestMatchers("/Area/**")
-				.hasAnyRole("ADMINISTRADOR").requestMatchers("/Banco/**").hasAnyRole("ADMINISTRADOR")
+
+				// ==== Rutas protegidas (solo para ADMINISTRADOR) ====
+				.requestMatchers("/Empleado/**").hasAnyRole("ADMINISTRADOR")
+				.requestMatchers("/Area/**").hasAnyRole("ADMINISTRADOR")
+				.requestMatchers("/Banco/**").hasAnyRole("ADMINISTRADOR")
 				.requestMatchers("/Contrato/**").hasAnyRole("ADMINISTRADOR")
-				.anyRequest().authenticated())
-				.formLogin(form -> form.loginPage("/Login").successHandler(customAuthenticationSuccessHandler())
-						.failureUrl("/Login?Error=true"))
-				.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler).and()
-				.logout(config -> config.logoutUrl("/Logout").logoutSuccessUrl("/Login").clearAuthentication(true)
-						.invalidateHttpSession(true))
-				.build();
+
+				// Cualquier otra ruta requiere autenticación
+				.anyRequest().authenticated()
+			)
+
+			// Configuración del formulario de login
+			.formLogin(form -> form
+				.loginPage("/Login") // Página personalizada de login
+				.successHandler(Redireccionamiento_AutentificacionExitoso()) // Redirección si el login es exitoso
+				.failureUrl("/Login?Error=true") // Redirección si el login falla
+			)
+
+			// Manejador de acceso denegado personalizado
+			.exceptionHandling().accessDeniedHandler(redireccionamiento_AccesoDenegado)
+
+			// Configuración de logout
+			.and()
+			.logout(config -> config
+				.logoutUrl("/Logout") // URL para cerrar sesión
+				.logoutSuccessUrl("/Login") // Redirección tras logout
+				.clearAuthentication(true) // Limpia la autenticación
+				.invalidateHttpSession(true) // Invalida la sesión
+			)
+
+			// Construye la cadena de filtros de seguridad
+			.build();
 	}
+
 }
 
 @Component
-class CustomAccessDeniedHandler implements AccessDeniedHandler {
+class Redireccionamiento_AccesoDenegado implements AccessDeniedHandler {
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {

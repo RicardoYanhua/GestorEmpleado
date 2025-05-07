@@ -31,9 +31,18 @@
 		<div th:insert="Componentes/Menu :: Menu-Header"></div>
 
 		<div class="Main-container container-fluid py-4">
-
-			<strong>Lista Area</strong>
-
+		
+		
+		
+		
+		
+			<div class="d-flex justify-content-between my-4">
+                    <strong class="lead fs-5 fw-bold">Areas registradas</strong>
+                    <a class="btn btn-primary rounded-3 px-4" th:href="@{/Area/Nuevo}">+ Registrar Area</a>
+                </div>
+			
+			<div class = "bg-white p-4 rounded-3 shadow ">
+			
 			<table class="table">
 
 				<thead>
@@ -41,25 +50,32 @@
 						<th>ID</th>
 						<th>Nombre</th>
 						<th>Salario Base</th>
-						<th>Operacion</th>
+						<th></th>
 
 					</tr>
 
 				</thead>
 
 				<tbody>
-					<tr th:each="area: ${listaAreas}">
+					<tr th:each="Area: ${Areas}">
 
-						<td th:text="${area.areaId}"></td>
-						<td th:text="${area.areaNombre}"></td>
-						<td th:text="${area.areaSalrioBase}"></td>
-						<td><a type="button" class="btn btn-primary"
-							th:href="@{/Area/Editar}"> Editar Salario </a></td>
+						<td th:text="${Area.areaId}"></td>
+						<td th:text="${Area.areaNombre}"></td>
+						<td th:text="${Area.areaSalarioBase}"></td>
+						<td><a type="button" class="btn btn-primary fs-9"
+							
+							th:href="@{/Area/Editar/{CodigoArea}(CodigoArea=${Area.areaId})}"
+							
+							
+							> Editar</a></td>
 
 					</tr>
 				</tbody>
 
 			</table>
+			</div>
+			
+			
 
 
 		</div>

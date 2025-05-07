@@ -24,7 +24,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "Empleado")
+@Table(name = "empleado")
 public class Empleado {
 
 	@Id
@@ -98,7 +98,7 @@ public class Empleado {
 	@NotNull(message = "Debe seleccionar un banco.")
 	private Banco empBancoId;
 
-	@OneToMany(mappedBy = "contratoEmpleadoId", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "contratoEmpleadoId", cascade = CascadeType.ALL)
 	private List<Contrato> empContratoId;
 
 	public enum Estado {

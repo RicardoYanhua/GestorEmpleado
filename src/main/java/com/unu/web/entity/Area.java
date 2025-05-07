@@ -39,20 +39,6 @@ public class Area {
     @OneToMany(mappedBy = "contratoAreaId")
     private List<Contrato> areaContratoId;
 
-    public Area() {
-		
-		this.areaId = 0;
-		this.areaNombre = null;
-		this.areaSalarioBase = null;
-	}
-    
-	public Area(Integer areaId, String areaNombre, BigDecimal areaSalarioBase) {
-		super();
-		this.areaId = areaId;
-		this.areaNombre = areaNombre;
-		this.areaSalarioBase = areaSalarioBase;
-	}
-
 	public Integer getAreaId() {
 		return areaId;
 	}
@@ -84,5 +70,7 @@ public class Area {
 	public void setAreaContratoId(List<Contrato> areaContratoId) {
 		this.areaContratoId = areaContratoId;
 	}
+    
+    
 
-}
+ }

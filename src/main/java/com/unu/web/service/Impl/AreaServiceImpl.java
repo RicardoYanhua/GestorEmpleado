@@ -1,21 +1,15 @@
 package com.unu.web.service.Impl;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import com.unu.web.entity.Area;
-import com.unu.web.entity.Banco;
 import com.unu.web.repository.AreaRepository;
-import com.unu.web.repository.BancoRepository;
 import com.unu.web.service.AreaService;
-import com.unu.web.service.BancoService;
 
 @Service("areaService")
 
@@ -47,7 +41,7 @@ public class AreaServiceImpl implements AreaService {
 	}
 
 	@Override
-	public Area ObtenerArea(String idArea) {
+	public Area ObtenerArea(Integer idArea) {
 		return areaRepository.findById(idArea)
 	            .orElseThrow(() -> new IllegalArgumentException("No se encontro el Area con ID : " + idArea));
 	}

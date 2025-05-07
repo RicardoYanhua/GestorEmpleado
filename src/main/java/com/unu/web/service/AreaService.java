@@ -12,6 +12,6 @@ public interface AreaService {
 	public abstract List<Area> ListarArea();
 	public abstract Area InsertarArea(Area area);
 	public abstract void ActualizarArea(Area area);
-	public abstract Area ObtenerArea(String idArea);
+	public abstract Area ObtenerArea(Integer idArea);
 	
 }

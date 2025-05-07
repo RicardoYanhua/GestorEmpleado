@@ -1,359 +1,174 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-<!-- Metaetiqueta para definir el conjunto de caracteres y la codificación de la página -->
-<meta charset="UTF-8" pageEncoding="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <meta name="pageEncoding" content="UTF-8">
+    <title>Empleados</title>
 
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-	crossorigin="anonymous">
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-	integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-	crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
 
-
-<!-- Enlaces a hojas de estilo locales -->
-<link href="/Styles/MenuStyle.css" rel="stylesheet">
-<link href="/Styles/Componente.css" rel="stylesheet">
-
-
-
-<script src="/Scripts/MenuScript.js"></script>
-
-
-<style type="text/css">
-.Grid-Container {
-	height: 100%;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-	align-items: start;
-	gap: 15px;
-}
-
-.card {
-	--primary-color: rgb(54, 124, 236);
-	display: flex;
-	flex-direction: row;
-	/* Para que la imagen y el contenido estén en fila */
-	max-width: 100%; /* Ancho máximo del card */
-	border: 1px solid #ddd; /* Borde del card */
-	border-radius: 8px; /* Bordes redondeados */
-	padding: 16px;
-	box-shadow: 0px 8px 16px 0px rgb(0 0 0/ 3%);
-	background-color: #fff; /* Fondo blanco */
-	transition: 0.3s;
-	flex-direction: row;
-}
-
-.card:hover .card__nombre {
-	color: var(--primary-color);
-}
-
-.card .img {
-	width: 120px; /* Tamaño fijo de la imagen */
-	height: 120px; /* Tamaño fijo de la imagen */
-	object-fit: cover;
-	/* Asegura que la imagen mantenga la proporción sin distorsionarse */
-	border-radius: 50%; /* Imagen redonda */
-}
-
-.card-content {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	flex-grow: 1;
-	margin-left: 20px;
-	/* Esto asegura que el contenido se expanda para llenar el espacio disponible */
-}
-
-.card h5 {
-	margin: 0; /* Elimina márgenes extra */
-	font-size: 1.2rem;
-	font-weight: 600;
-}
-
-.card:hover {
-	background-color: rgb(235, 242, 253);
-	transform: translateY(-1px);
-	box-shadow: 0px 8px 16px 0px rgb(54, 124, 236, 0.2);
-	border: 1px solid var(--primary-color);
-}
-</style>
-
-
-
+    <link href="/Styles/MenuStyle.css" rel="stylesheet">
+    <link href="/Styles/Componente.css" rel="stylesheet">
+    <link href="/Styles/LayoutCards.css" rel="stylesheet">
 </head>
 
 <body>
-	<div class="Container">
-
-		<div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container"
-			class="Menu-container"></div>
-
-		<div th:insert="Componentes/Menu :: Menu-Header"></div>
-
-		<div class="Main-container container-fluid py-4">
-
-
-
-			<strong class="lead fs-7 mb-3 fw-bold">Busqueda</strong>
-
-			<!-- Formulario de búsqueda con filtro y botón -->
-			<form th:action="@{/Empleado/Lista}" method="get"
-				class="row g-2 align-items-center mb-3">
-
-
-				<div class="container-fluid">
-					<div class="row g-2 align-items-center">
-						<!-- InputContainer ocupa todo en xs y sm, y se expande en md+ -->
-						<div class="col-12 col-md">
-							<div class="InputContainer">
-								<img class="icono" src="/SVG/buscar.svg" alt="Icono usuario" />
-								<input class="input" id="usuario" type="search" name="Busqueda"
-									th:value="${Busqueda}"
-									placeholder="Ingrese datos del empleado a buscar..."
-									autocomplete="off">
-							</div>
-						</div>
-
-						<!-- Menú con ancho fijo -->
-						<div class="col-6 col-md-auto">
-							<div class="menu">
-								<div class="item">
-									<input type="hidden" id="BusquedaFiltro" name="Filtro"
-										th:value="${Filtro}">
-									<button class="link">
-										<span id="TextFilter" th:text="${Filtro}"></span>
-										<svg viewBox="0 0 360 360" xml:space="preserve" width="16"
-											height="16">
-              <g id="SVGRepo_iconCarrier">
-                <path id="XMLID_225_"
-												d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 
-                  c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 
-                  s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"></path>
-              </g>
-            </svg>
-									</button>
-									<div class="submenu">
-										<div class="submenu-item">
-											<button type="button" class="submenu-link"
-												onclick="setfilterSelect('Todo')">Todo</button>
-										</div>
-										<div class="submenu-item">
-											<button type="button" class="submenu-link"
-												onclick="setfilterSelect('Codigo')">Codigo</button>
-										</div>
-										<div class="submenu-item">
-											<button type="button" class="submenu-link"
-												onclick="setfilterSelect('DNI')">DNI</button>
-										</div>
-										<div class="submenu-item">
-											<button type="button" class="submenu-link"
-												onclick="setfilterSelect('Nombres')">Nombres</button>
-										</div>
-										<div class="submenu-item">
-											<button type="button" class="submenu-link"
-												onclick="setfilterSelect('A.Paterno')">A.Paterno</button>
-										</div>
-										<div class="submenu-item">
-											<button type="button" class="submenu-link"
-												onclick="setfilterSelect('A.Materno')">A.Materno</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- Botón fijo -->
-						<div class="col-6 col-md-auto">
-							<button type="submit" class="ButtonHover w-100 px-5">Buscar</button>
-						</div>
-					</div>
-				</div>
-
-
-
-
-
-
-
-
-				<!-- Botón "Nuevo Empleado" alineado a la derecha -->
-				<div class="d-flex justify-content-between mt-4">
-					<strong class="lead fs-4 fw-bold">Lista Empleados</strong> <a
-						class="btn btn-primary rounded-3 px-4"
-						th:href="@{/Empleado/Nuevo}"> + Registar empleado</a>
-				</div>
-
-			</form>
-
-
-
-			<div class="Grid-Container">
-
-
-				<div class="card" th:each="Empleado : ${ListaEmpleados}">
-
-					<div class="mb-2">
-						<div class="d-flex mb-1 align-items-center">
-							<img src="/SVG/codigo.svg" alt="codigo" width="30" height="30">
-							<span th:text="${Empleado.empCodigo}" class="fs-9 fw-bold ms-1"></span>
-
-						</div>
-
-						<img
-							th:if="${Empleado.empFoto != null and Empleado.empFoto != ''}"
-							th:src="@{/Empleado/FotoEmpleado/{nombre}(nombre=${Empleado.empFoto})}"
-							alt="Foto empleado" class="img img-fluid rounded-3 mb-2"> <img
-							th:if="${Empleado.empFoto == null or Empleado.empFoto == ''}"
-							src="/SVG/foto.svg" alt="Foto empleado"
-							class="img img-fluid rounded-3 mb-2">
-
-
-
-
-						<div class="d-flex justify-content-between px-1">
-							<img src="/SVG/dni.svg" alt="codigo" width="20" height="20">
-							<span th:text="${Empleado.empDni}" class="fs-9"></span>
-						</div>
-
-						<div class="d-flex justify-content-between px-1">
-							<img src="/SVG/tiempo.svg" alt="codigo" width="20" height="20">
-							<span th:text="${Empleado.empFechaRegistro}" class="fs-9"></span>
-						</div>
-
-
-					</div>
-
-
-					<!-- Contenido -->
-					<div class="card-content mb-2">
-
-						<div class="d-flex justify-content-end me-2 mb-1">
-
-							<div th:if="${Empleado.getEstado() == 'Inactivo'}"
-								style="padding: 3px 15px; width: fit-content; background: #EF665B; border-radius: 8px;">
-
-								<span class="text-white fs-9 fw-bold"
-									th:text="${Empleado.getEstado()}"></span>
-
-							</div>
-							<div th:if="${Empleado.getEstado() == 'Activo'}"
-								style="padding: 3px 15px; width: fit-content; background: #17c675; border-radius: 8px;">
-
-								<span class="text-white fs-9 fw-bold"
-									th:text="${Empleado.getEstado()}"></span>
-
-							</div>
-						</div>
-
-
-						<h5 class="card__nombre"
-							th:text="${Empleado.getNombreApellidos()}">Nombre</h5>
-						<div class="mb-2 fs-9 mx-3">
-
-
-							<div class="d-flex justify-content-between">
-								<span class="fw-bold">Banco</span> <span
-									th:text="${Empleado.empBancoId.bancoNombre}"></span>
-							</div>
-
-							<div class="d-flex justify-content-between">
-								<span class="fw-bold">Edad</span> <span
-									th:text="${Empleado.getEdad()}"></span>
-							</div>
-
-							<div class="d-flex justify-content-between">
-								<span class="fw-bold">Genero</span> <span
-									th:text="${Empleado.getGenero()}"></span>
-							</div>
-
-							<div class="d-flex justify-content-between">
-								<span class="fw-bold">E. Civil</span> <span
-									th:text="${Empleado.getEstadoCivil()}"></span>
-							</div>
-							<div class="d-flex justify-content-between">
-								<span class="fw-bold">F. Nacimiento</span> <span
-									th:text="${Empleado.empFechaNacimiento}"></span>
-							</div>
-
-
-
-						</div>
-
-
-						<!-- Botones -->
-						<div
-							class="card-buttons d-flex justify-content-end align-items-center gap-2 mt-4 me-3">
-							<a
-								th:href="@{/Contrato/Lista(CodigoEmpleado=${Empleado.empCodigo})}"
-								class="btn btn-warning rounded-3 px-3 btn-sm shadow">Contrato</a>
-							<a id="btnEditar"
-								th:href="@{/Empleado/Editar/{CodigoEmpleado}(CodigoEmpleado=${Empleado.empCodigo})}"
-								class="btn-icon icon-edit rounded-3 btn-sm"
-								data-bs-toggle="tooltip" title="Editar"> </a>
-						</div>
-					</div>
-
-
-				</div>
-			</div>
-
-
-
-
-			<!-- Paginación -->
-			<nav aria-label="Paginación"
-				class="mt-4 d-flex justify-content-center">
-				<ul class="pagination">
-					<li class="page-item" th:if="${page.hasPrevious()}"><a
-						th:href="@{/Empleado/Lista(page=${page.number - 1})}"
-						class="page-link">Anterior</a></li>
-					<li class="page-item disabled"><a class="page-link">
-							Página <span th:text="${page.number + 1}"></span> de <span
-							th:text="${page.totalPages}"></span>
-					</a></li>
-					<li class="page-item" th:if="${page.hasNext()}"><a
-						th:href="@{/Empleado/Lista(page=${page.number + 1})}"
-						class="page-link">Siguiente</a></li>
-				</ul>
-			</nav>
-
-
-		</div>
-	</div>
-
-
-	<script>
-		function setfilterSelect(text) {
-			const input = document.getElementById('BusquedaFiltro');
-			const span = document.getElementById('TextFilter');
-			span.innerText = text;
-			input.value = text;
-		}
-		setActiveByIndex(0);
-
-		if (window.location.pathname.includes("/Empleado/Lista")) {
-			Object.keys(sessionStorage).forEach(function(key) {
-				if (key.startsWith("fotoPreview-")) {
-					sessionStorage.removeItem(key);
-				}
-			});
-		}
-	</script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			var tooltipTriggerList = [].slice.call(document
-					.querySelectorAll('[data-bs-toggle="tooltip"]'));
-			tooltipTriggerList.forEach(function(tooltipTriggerEl) {
-				new bootstrap.Tooltip(tooltipTriggerEl);
-			});
-		});
-	</script>
+    <div class="Container">
+        <div th:insert="Componentes/Menu :: Menu-Sidebar" id="Menu-container" class="Menu-container"></div>
+        <div th:insert="Componentes/Menu :: Menu-Header"></div>
+
+        <div class="Main-container container-fluid py-4">
+            <strong class="lead fs-5 mb-3 fw-bold">Buscar empleado</strong>
+
+            <form th:action="@{/Empleado/Lista}" method="get" class="row g-2 align-items-center mb-3">
+                <div class="container-fluid">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-md">
+                            <div class="InputContainer">
+                                <img class="icono" src="/SVG/buscar.svg" alt="Icono usuario" />
+                                <input class="input" id="usuario" type="search" name="Busqueda"
+                                       th:value="${Busqueda}" placeholder="Ingrese datos del empleado a buscar..."
+                                       autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-auto">
+                            <div class="menu">
+                                <div class="item">
+                                    <input type="hidden" id="Filtro" name="Filtro" th:value="${Filtro}">
+                                    <button class="link">
+                                        <span id="FiltroTexto" th:text="${Filtro}"></span>
+                                    </button>
+                                    <div class="submenu">
+                                        <div class="submenu-item"><button type="button" class="submenu-link" onclick="InsertarFiltroSeleccionado('Todo')">Todo</button></div>
+                                        <div class="submenu-item"><button type="button" class="submenu-link" onclick="InsertarFiltroSeleccionado('Codigo')">Codigo</button></div>
+                                        <div class="submenu-item"><button type="button" class="submenu-link" onclick="InsertarFiltroSeleccionado('DNI')">DNI</button></div>
+                                        <div class="submenu-item"><button type="button" class="submenu-link" onclick="InsertarFiltroSeleccionado('Nombres')">Nombres</button></div>
+                                        <div class="submenu-item"><button type="button" class="submenu-link" onclick="InsertarFiltroSeleccionado('A.Paterno')">A.Paterno</button></div>
+                                        <div class="submenu-item"><button type="button" class="submenu-link" onclick="InsertarFiltroSeleccionado('A.Materno')">A.Materno</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-auto">
+                            <button type="submit" class="ButtonHover w-100 px-5">Buscar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <strong class="lead fs-5 fw-bold">Lista Empleados</strong>
+                    <a class="btn btn-primary rounded-3 px-4" th:href="@{/Empleado/Nuevo}">+ Registrar empleado</a>
+                </div>
+            </form>
+
+            <div class="Grid-Container">
+                <div class="Card-Empleado" th:each="Empleado : ${Empleados}">
+                    <div class="mb-2">
+                        <div class="d-flex mb-1 align-items-center">
+                            <img src="/SVG/codigo.svg" alt="codigo" width="30" height="30">
+                            <span th:text="${Empleado.empCodigo}" class="fs-9 fw-bold ms-1"></span>
+                        </div>
+
+                        <img th:if="${Empleado.empFoto != null and Empleado.empFoto != ''}"
+                             th:src="@{/Empleado/FotoEmpleado/{nombre}(nombre=${Empleado.empFoto})}"
+                             alt="Foto empleado" class="img img-fluid rounded-3 mb-2">
+                        <img th:if="${Empleado.empFoto == null or Empleado.empFoto == ''}"
+                             src="/SVG/foto.svg" alt="Foto empleado" class="img img-fluid rounded-3 mb-2">
+
+                        <div class="d-flex justify-content-between px-1">
+                            <img src="/SVG/dni.svg" alt="dni" width="20" height="20">
+                            <span th:text="${Empleado.empDni}" class="fs-9"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between px-1">
+                            <img src="/SVG/tiempo.svg" alt="tiempo" width="20" height="20">
+                            <span th:text="${Empleado.empFechaRegistro}" class="fs-9"></span>
+                        </div>
+                    </div>
+
+                    <div class="Card-Empleado-Content mb-2">
+                        <div class="d-flex justify-content-end me-2 mb-1">
+                            <div th:if="${Empleado.getEstado() == 'Inactivo'}"
+                                 class="Background__Inactived" th:text="${Empleado.getEstado()}"></div>
+                            <div th:if="${Empleado.getEstado() == 'Activo'}"
+                                 class="Background__Actived" th:text="${Empleado.getEstado()}"></div>
+                        </div>
+
+                        <h5 class="card__nombre mb-2" th:text="${Empleado.empNombres}"></h5>
+
+                        <div class="mb-2 fs-9 mx-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Banco</span>
+                                <span th:text="${Empleado.empBancoId.bancoNombre}"></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Edad</span>
+                                <span th:text="${Empleado.getEdad()}"></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">Género</span>
+                                <span th:text="${Empleado.getGenero()}"></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">E. Civil</span>
+                                <span th:text="${Empleado.getEstadoCivil()}"></span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">F. Nacimiento</span>
+                                <span th:text="${Empleado.empFechaNacimiento}"></span>
+                            </div>
+                        </div>
+
+                        <div class="card-buttons d-flex justify-content-end align-items-center gap-2 mt-4 me-3">
+                            <a th:href="@{/Contrato/Lista(CodigoEmpleado=${Empleado.empCodigo})}"
+                               class="btn-icon icon-contrato" data-bs-toggle="tooltip" title="Contratar"></a>
+                            <a th:href="@{/Empleado/Editar/{CodigoEmpleado}(CodigoEmpleado=${Empleado.empCodigo})}"
+                               class="btn-icon icon-edit" data-bs-toggle="tooltip" title="Editar"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav aria-label="Paginación" class="mt-4 d-flex justify-content-center">
+                <ul class="pagination">
+                    <li class="page-item" th:if="${Pagina.hasPrevious()}">
+                        <a th:href="@{/Empleado/Lista(Pagina=${Pagina.number - 1})}" class="page-link">Anterior</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            Página <span th:text="${Pagina.number + 1}"></span> de
+                            <span th:text="${Pagina.totalPages}"></span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:if="${Pagina.hasNext()}">
+                        <a th:href="@{/Empleado/Lista(Pagina=${Pagina.number + 1})}" class="page-link">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+            
+    <script src="/Scripts/MenuScript.js"></script>
+    <script src="/Scripts/Tooltip.js"></script>
+    <script src="/Scripts/Window.js"></script>
+
+    <script>
+        function InsertarFiltroSeleccionado(text) {
+            const input = document.getElementById('Filtro');
+            const span = document.getElementById('FiltroTexto');
+            span.innerText = text;
+            input.value = text;
+        }
+        setActiveByIndex(0);
+    </script>
 </body>
 </html>
-

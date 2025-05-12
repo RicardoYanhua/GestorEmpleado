@@ -31,7 +31,7 @@
 					src="/SVG/banco.svg" alt="ProductosIcon"> <span>Banco</span>
 				</a> <a class="MenuButton" th:href="@{/Area}"> <img
 					src="/SVG/area.svg" alt="VentasIcon"> <span>Area</span>
-				</a> <a class="MenuButton" href="#"> <img src="/SVG/acceso.svg"
+				</a> <a class="MenuButton" th:href="@{/Administrador}"> <img src="/SVG/acceso.svg"
 					alt="SesionIcon" class="menu-icon"> <span>Acceso</span>
 				</a>
 
@@ -42,10 +42,31 @@
 
 
 
-		<a class="btn btn-primary  rounded-3 mt-5 py-1 fs-6 fw-bold"
-			th:href="@{/Logout}"> <img alt="" src="/SVG/cerrarsesion.svg"
-			width="30" height="30">
+		<a class="btn btn-primary rounded-3 mt-5 py-1 fs-6 fw-bold"
+			data-bs-toggle="modal" data-bs-target="#confirmarLogout"> <img
+			alt="" src="/SVG/cerrarsesion.svg" width="30" height="30">
 		</a>
+
+		<div class="modal fade" id="confirmarLogout" tabindex="-1"
+			aria-labelledby="logoutLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="logoutLabel">Confirmar cierre de
+							sesión</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Cerrar"></button>
+					</div>
+					<div class="modal-body">¿Estás seguro de que deseas cerrar
+						sesión?</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Cancelar</button>
+						<a href="/Logout" class="btn btn-danger">Cerrar sesión</a>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
 

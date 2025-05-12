@@ -36,7 +36,8 @@ public class Administrador implements UserDetails {
 	@Column(name = "admNombreCompleto", length = 100)
 	private String admNombreCompleto;
 
-	
+	@Column(name = "admState", nullable = false)
+	private boolean admState;
 
 	public Administrador() {
 		this.admCodigo = 0;
@@ -84,8 +85,14 @@ public class Administrador implements UserDetails {
 	public void setAdmNombreCompleto(String admNombreCompleto) {
 		this.admNombreCompleto = admNombreCompleto;
 	}
+	public boolean isAdmState() {
+		return admState;
+	}
 
-	
+	public void setAdmState(boolean admState) {
+		this.admState = admState;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"));

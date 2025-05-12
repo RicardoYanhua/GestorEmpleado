@@ -273,15 +273,10 @@ public class Empleado {
 	}
 	
 	public String getNombreApellidos() {
-	    return capitalize(this.empNombres) + " " + capitalize(this.empApellidoPaterno) + " " + capitalize(this.empApellidoMaterno);
+	    return this.empNombres + " " + this.empApellidoPaterno + " " + this.empApellidoMaterno;
 	}
 
-	private String capitalize(String palabra) {
-	    if (palabra == null || palabra.isEmpty()) {
-	        return palabra;
-	    }
-	    return palabra.substring(0, 1).toUpperCase() + palabra.substring(1).toLowerCase();
-	}
+	
 
 	public Genero getEmpGenero() {
 		return empGenero;

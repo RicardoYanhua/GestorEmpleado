@@ -46,59 +46,70 @@ public class ContratoController {
 	private AreaService areaService;
 
 	public boolean ActivarBoleta(LocalDate fechaInicio, LocalDate fechaFin) {
+	    LocalDate fechaActual = LocalDate.now();
 
-		LocalDate fechaActual = LocalDate.now();
+	    if (fechaInicio == null || fechaFin == null) {
+	        return false;
+	    }
 
-		if (fechaActual.isBefore(fechaInicio) || fechaActual.isAfter(fechaFin)) {
-			return false;
-		}
+	    if (fechaActual.isBefore(fechaInicio) || fechaActual.isAfter(fechaFin)) {
+	        return false;
+	    }
 
-		LocalDate iterador = fechaInicio.plusMonths(1);
-		while (!iterador.isAfter(fechaFin)) {
-			if (fechaActual.isEqual(iterador)) {
-				return true;
-			}
-			iterador = iterador.plusMonths(1);
-		}
+	    LocalDate iterador = fechaInicio.plusMonths(1);
+	    while (!iterador.isAfter(fechaFin)) {
+	        if (fechaActual.isEqual(iterador)) {
+	            return true;
+	        }
+	        iterador = iterador.plusMonths(1);
+	    }
 
-		return false;
+	    return false;
 	}
+
 
 	public String MensajeBoleta(LocalDate fechaInicio, LocalDate fechaFin) {
+	    LocalDate fechaActual = LocalDate.now();
 
-		LocalDate fechaActual = LocalDate.now();
+	    if (ActivarBoleta(fechaInicio, fechaFin)) {
+	        return "Realizar pago.";
+	    } else {
+	       
+	        LocalDate siguientePago = fechaInicio.withDayOfMonth(fechaInicio.getDayOfMonth());
 
-		if (ActivarBoleta(fechaInicio, fechaFin)) {
-			return "Realizar pago.";
-		} else {
-			LocalDate siguientePago = fechaInicio.withDayOfMonth(5);
+	       
+	        if (!fechaActual.isBefore(siguientePago)) {
+	            siguientePago = siguientePago.plusMonths(1);
+	        }
 
-			if (siguientePago.isBefore(fechaActual)) {
-				siguientePago = siguientePago.plusMonths(1);
-			}
-
-			long diasFaltantes = ChronoUnit.DAYS.between(fechaActual, siguientePago);
-
-			return "Faltan " + (diasFaltantes + 1) + " días.";
-		}
+	        if (fechaFin != null && siguientePago.isAfter(fechaFin)) {
+	            return "Contrato vencido.";
+	        }
+	        long diasFaltantes = ChronoUnit.DAYS.between(fechaActual, siguientePago);
+	        if (fechaActual.isBefore(fechaInicio)) {
+	            return "";
+	        } else {
+	            return "Faltan " + (diasFaltantes) + " días.";
+	        }
+	    }
 	}
+
 
 	@GetMapping("/Lista")
 	public ModelAndView verDetalles(@RequestParam("CodigoEmpleado") String empleado) {
 		ModelAndView modelAndView = new ModelAndView("Contrato/ListaContrato");
 		Empleado emp = empleadoService.ObtenerEmpleado(empleado);
 		List<Contrato> listaContratos = contratoService.ListaContratoEmpleadoCaducado(emp);
-		
+
 		Contrato cont = contratoService.ObtenerContrato(emp);
 
-		if(cont!=null) {
+		if (cont != null) {
 			LocalDate fechaInicio = cont.getContratoFechaInicio();
 			LocalDate fechaFin = cont.getContratoFechaFin();
 
 			modelAndView.addObject("Boleta", ActivarBoleta(fechaInicio, fechaFin));
 			modelAndView.addObject("MensajeBoleta", MensajeBoleta(fechaInicio, fechaFin));
 		}
-		
 
 		modelAndView.addObject("ListaContratos", listaContratos);
 		modelAndView.addObject("CodigoEmpleado", empleado);
@@ -127,15 +138,18 @@ public class ContratoController {
 
 		Estado estadoContrato = contratoService.DeterminarEstadoDelContrato(contrato);
 		contrato.setContratoEstado(estadoContrato);
+		
+		System.out.println(contrato.toString());
 
 		if (result.hasErrors()) {
+			
 			if (estadoContrato == null) {
 				modelAndView.addObject("ErrorFechas", "El orden de las fechas seleccionadas no es válido.");
 			}
-
 			modelAndView.addObject("Areas", areaService.ListarArea());
 			modelAndView.setViewName("Contrato/NuevoContrato");
 			return modelAndView;
+			
 		}
 		contratoService.InsertarContrato(contrato);
 		modelAndView.setViewName(

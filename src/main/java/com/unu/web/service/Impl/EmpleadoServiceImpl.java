@@ -20,7 +20,7 @@ public class EmpleadoServiceImpl implements EmpleadoService {
 	@Override
 	public Page<Empleado> ListarEmpleado(Pageable paginacion, String busqueda, String filtro) {
 	    Page<Empleado> lista = null;
-	    int tamañoDePagina = 12;
+	    int tamañoDePagina = 6;
 
 	    switch (filtro) {
 	        case "Todo":

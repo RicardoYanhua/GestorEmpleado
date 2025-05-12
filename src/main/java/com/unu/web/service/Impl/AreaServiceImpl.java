@@ -12,7 +12,6 @@ import com.unu.web.repository.AreaRepository;
 import com.unu.web.service.AreaService;
 
 @Service("areaService")
-
 public class AreaServiceImpl implements AreaService {
 
 	@Autowired

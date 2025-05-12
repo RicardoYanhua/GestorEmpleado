@@ -1,8 +1,5 @@
 package com.unu.web.service;
 
-import java.io.IOException;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -11,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.unu.web.entity.Administrador;
 import com.unu.web.repository.AdministradorRepository;
+
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,6 +32,9 @@ public class AdministradorService implements UserDetailsService {
 		    if (adm == null) {
 		        throw new UsernameNotFoundException("Usuario no encontrado");
 		    }
+		    if (!adm.isAdmState()) {
+	            throw new DisabledException("Cuenta deshabilitada");
+	        }
 		    return new User(adm.getUsername(), adm.getPassword(), adm.getAuthorities());
 	}
 	

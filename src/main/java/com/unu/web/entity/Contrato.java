@@ -240,12 +240,20 @@ public class Contrato {
 	}
 	@Override
 	public String toString() {
-		return "Contrato [contratoId=" + contratoId + ", contratoEmpleadoId=" + contratoEmpleadoId + ", contratoAreaId="
-				+ contratoAreaId + ", contratoModalidad=" + contratoModalidad + ", contratoDetalle=" + contratoDetalle
-				+ ", contratoJornada=" + contratoJornada + ", contratoFechaInicio=" + contratoFechaInicio
-				+ ", contratoFechaFin=" + contratoFechaFin + ", contratoSalario=" + contratoSalario
-				+ ", contratoEstado=" + contratoEstado + "]";
+	    return "Contrato {\n" +
+	           "  contratoId=" + contratoId + ",\n" +
+	           "  contratoEmpleadoId=" + contratoEmpleadoId + ",\n" +
+	           "  contratoAreaId=" + contratoAreaId + ",\n" +
+	           "  contratoModalidad=" + contratoModalidad + ",\n" +
+	           "  contratoDetalle=" + contratoDetalle + ",\n" +
+	           "  contratoJornada=" + contratoJornada + ",\n" +
+	           "  contratoFechaInicio=" + contratoFechaInicio + ",\n" +
+	           "  contratoFechaFin=" + contratoFechaFin + ",\n" +
+	           "  contratoSalario=" + contratoSalario + ",\n" +
+	           "  contratoEstado=" + contratoEstado + "\n" +
+	           "}";
 	}
+
 	
 	
 

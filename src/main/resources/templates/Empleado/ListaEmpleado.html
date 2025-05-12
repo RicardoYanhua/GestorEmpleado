@@ -137,7 +137,8 @@
             <nav aria-label="Paginación" class="mt-4 d-flex justify-content-center">
                 <ul class="pagination">
                     <li class="page-item" th:if="${Pagina.hasPrevious()}">
-                        <a th:href="@{/Empleado/Lista(Pagina=${Pagina.number - 1})}" class="page-link">Anterior</a>
+                       <a th:href="@{/Empleado/Lista(page=${Pagina.number - 1}, Busqueda=${Busqueda}, Filtro=${Filtro})}" class="page-link">Anterior</a>
+
                     </li>
                     <li class="page-item disabled">
                         <a class="page-link">
@@ -146,7 +147,8 @@
                         </a>
                     </li>
                     <li class="page-item" th:if="${Pagina.hasNext()}">
-                        <a th:href="@{/Empleado/Lista(Pagina=${Pagina.number + 1})}" class="page-link">Siguiente</a>
+                        <a th:href="@{/Empleado/Lista(page=${Pagina.number + 1}, Busqueda=${Busqueda}, Filtro=${Filtro})}" class="page-link">Siguiente</a>
+
                     </li>
                 </ul>
             </nav>

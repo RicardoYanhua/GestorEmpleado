@@ -98,15 +98,17 @@ public class ContratoServiceImpl implements ContratoService {
 		if (fechaInicio == null) {
 			return null;
 		}
-
+		
+		if (fechaActual.isBefore(fechaInicio)) {
+			return Estado.P; // Pendiente
+		}
+		
 		// Validación lógica de fechas incorrectas
 		if (fechaFin != null && (fechaFin.isBefore(fechaInicio) || fechaFin.isEqual(fechaInicio))) {
 			return null;
 		}
 
-		if (fechaActual.isBefore(fechaInicio)) {
-			return Estado.P; // Pendiente
-		}
+		
 
 		if ((fechaFin == null && fechaActual.isAfter(fechaInicio))
 				|| (fechaFin == null && fechaActual.isEqual(fechaInicio))) {

@@ -98,18 +98,21 @@ public class EmpleadoController {
 		if (!file.isEmpty()) {
 			empleado.setEmpFotoByte(file.getBytes());
 			empleado.setEmpFoto(file.getOriginalFilename());
+			GuardarFoto(empleado);
 		}
-		
+		System.out.println(empleado.toString());
 		if (result.hasErrors()) {
 
 			modelAndView.addObject("Bancos", bancoService.ListarBanco());
 			modelAndView.setViewName("Empleado/EditarEmpleado");
 			return modelAndView;
 		}
-
+		
 		if (!file.isEmpty()) {
+			
 			GuardarFoto(empleado);
 		}
+		
 		
 		empleadoService.ActualizarEmpleado(empleado);
 		modelAndView.setViewName("redirect:/Empleado/Lista");
@@ -141,6 +144,7 @@ public class EmpleadoController {
 			empleado.setEmpFotoByte(file.getBytes());
 			empleado.setEmpFoto(file.getOriginalFilename());
 		}
+		
 		boolean FotoValidation = true;
 
 		if (empleado.getEmpFoto() == null || empleado.getEmpFoto().equals("")) {

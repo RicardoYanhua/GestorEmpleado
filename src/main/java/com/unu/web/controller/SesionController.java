@@ -1,6 +1,7 @@
 package com.unu.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -20,9 +21,12 @@ public class SesionController {
 	private AdministradorRepository administradorRepository;
 
 	@GetMapping("/Login")
-	public ModelAndView Login() {
-		ModelAndView modelAndView = new ModelAndView("/Sesion/FormLogin");
-		return modelAndView;
+	public ModelAndView Login(Authentication authentication) {
+		if (authentication != null && authentication.isAuthenticated()) {
+	        return new ModelAndView("redirect:/Empleado/Lista");
+	    }
+
+	    return new ModelAndView("/Sesion/FormLogin");
 	}
 
 	@GetMapping("/Register")
